@@ -1,23 +1,25 @@
 <template>
-  <div id="app">
-    <header>
-      <nav>
-        <img
-          id="nav-logo"
-          src="./assets/img/icon-left-font-monochrome-black.svg"
-          alt="logo-groupomania"
-        />
-        <NavLink url="/feed" text="Accueil" />
-        <NavLink url="/contact" text="Notifications" />
-      </nav>
-    </header>
-    <body></body>
-    <footer>
-      <Footer url="/" text="Confidentialité" />
-      <Footer url="/" text="Conditions générales" />
-      <Footer url="/" text="Accueil" />
-    </footer>
-  </div>
+  <header>
+    <router-link to="/">
+      <img
+        id="nav-logo"
+        src="./assets/img/icon-left-font-monochrome-black.svg"
+        alt="logo-groupomania"
+      />
+    </router-link>
+    <nav>
+      <NavLink url="/" text="Accueil" />
+      <NavLink url="/profile" text="Profile" />
+      <button type="button" @click="showNotifs">Notifications</button>
+      <NavLink url="/sign" text="déconnexion" @click="disconnect" />
+    </nav>
+  </header>
+  <router-view />
+  <footer>
+    <Footer url="/" text="Confidentialité" />
+    <Footer url="/" text="Conditions générales" />
+    <Footer url="/" text="Accueil" />
+  </footer>
 </template>
 
 <script>
@@ -28,7 +30,33 @@ export default {
   name: "App",
   components: {
     NavLink,
-    Footer
-  }
+    Footer,
+  },
+  methods: {
+    disconnect() {
+      localStorage.clear();
+    },
+    showNotifs() {},
+  },
 };
 </script>
+
+<style lang="scss">
+a {
+  margin: 10px;
+}
+header,
+footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+h1 {
+  text-align: center;
+}
+.profile-picture {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+</style>

@@ -1,11 +1,10 @@
-// ./components/NavLink.vue
+<template>
+  <router-link :to="url">{{ text }}</router-link>
+</template>
+
 <script>
 export default {
   name: "NavLink",
-  props: ["url", "text"]
+  props: ["url", "text"],
 };
 </script>
-
-<template>
-  <a :href="url">{{ text }}</a>
-</template>

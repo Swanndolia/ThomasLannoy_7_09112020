@@ -2,19 +2,24 @@ import { createRouter, createWebHashHistory } from "vue-router";
 
 const routes = [
   {
-    path: "/feed",
+    path: "/",
     name: "Feed",
     component: () => import("../views/Feed.vue"),
   },
   {
-    path: "/post",
-    name: "Post",
-    component: () => import("../views/Post.vue"),
+    path: "/selected-post-id",
+    name: "SelectedPost",
+    component: () => import("../views/ShowPost.vue"),
   },
   {
     path: "/profile",
     name: "Profile",
     component: () => import("../views/Profile.vue"),
+  },
+  {
+    path: "/profile/edit",
+    name: "EditProfile",
+    component: () => import("../views/EditProfile.vue"),
   },
   {
     path: "/sign",
