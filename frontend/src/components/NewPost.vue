@@ -46,7 +46,6 @@ export default {
         postData.append("user", this.post.user);
         postData.append("image", this.post.image);
         postData.append("content", this.post.content);
-        console.log(postData.get("content"));
         //we put image and content of post in a FormData and check if it's not empty
         axios
           .post("http://localhost:3000/api/posts/create", postData, {

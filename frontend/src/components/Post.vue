@@ -1,7 +1,8 @@
 <template>
-  <div class="post">
+  <div class="post" @click="showPost" :id="post.id">
     <figure id="post-user-info">
-      <img class="profile-picture"
+      <img
+        class="profile-picture"
         :src="post.user.imageUrl"
         :alt="'Photo de profil de ' + post.user.username"
       />
@@ -16,6 +17,10 @@
         <img :src="post.imageUrl" :alt="'Image du post'" />
       </div>
     </div>
+    <div id="react">
+        <p>Reagir</p>
+        <p>Commenter</p>
+    </div>
   </div>
 </template>
 
@@ -24,6 +29,12 @@ export default {
   name: "Post",
   data() {
     return {};
+  },
+  methods: {
+    showPost() {
+      console.log(this.post.id);
+      //zoomer le post et afficher les commentaires
+    },
   },
   props: {
     post: {
@@ -53,7 +64,14 @@ export default {
 #post-content {
   margin: 0px 50px;
 }
-figcaption{
+figcaption {
   margin: 5px;
+}
+#react {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin: 10px 30px;
+  border-top: solid 1px;
 }
 </style>

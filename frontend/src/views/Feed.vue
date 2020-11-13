@@ -2,7 +2,11 @@
   <main>
     <h1>This is the page with all the posts</h1>
     <NewPost />
-    <Post v-for="post in feedPosts" :key="post.id" :post="post" />
+    <Post
+      v-for="post in feedPosts"
+      :key="post.id"
+      :post="post"
+    />
     <router-view />
   </main>
 </template>
@@ -25,23 +29,33 @@ export default {
         {
           id: "GitHub",
           content:
-            "qjsdgfrtkgjhgsqkdjhrgfkujqs qsudyfgiuqsydf sdf qs df sq dfqsdiufyhaziufgzq sdf azee raf zedf",
+            "Phasellus laoreet sed lacus ut tempus. Phasellus vel magna vitae ipsum lacinia ornare et et odio. Mauris laoreet sem et erat lacinia, eget hendrerit dui finibus. Ut porta justo velit, vitae blandit eros mollis eu.",
           createdAt: "26 Décembre 2019",
-          user: { username: "Thomas Lannoy", imageUrl:"https://picsum.photos/300/200?random" },
+          user: {
+            username: "Thomas Lannoy",
+            imageUrl: "https://picsum.photos/300/200?random",
+          },
         },
         {
           id: "Twitter",
           content:
-            "djhfgyhzeifd gedzf gzeorf taef zna jk hstfd bezrt ezrtazedfazed ferzr(zuyiuhi iutguytfiuy",
+            "Phasellus laoreet sed lacus ut tempus. Phasellus vel magna vitae ipsum lacinia ornare et et odio. Mauris laoreet sem et erat lacinia, eget hendrerit dui finibus. Ut porta justo velit, vitae blandit eros mollis eu.",
           createdAt: "18 Octobre 2020",
-          user: { username: "Fabrice Lannoy", imageUrl:"https://picsum.photos/300/200?random" },
+          imageUrl: "https://picsum.photos/300/200?random",
+          user: {
+            username: "Fabrice Lannoy",
+            imageUrl: "https://picsum.photos/300/200?random",
+          },
         },
         {
           id: "Netlify",
           content:
-            "iuytiu fy fè_tf_è-t fè-rdy tuiytèyt retfkjhgjhgfd hgfd hggvf kjhgiyutdg ytds yfd jkhgfug s yf",
+            "Phasellus laoreet sed lacus ut tempus. Phasellus vel magna vitae ipsum lacinia ornare et et odio. Mauris laoreet sem et erat lacinia, eget hendrerit dui finibus. Ut porta justo velit, vitae blandit eros mollis eu.",
           createdAt: "5 Novembre 2020",
-          user: { username: "Maryse Daniel", imageUrl:"https://picsum.photos/300/200?random" },
+          user: {
+            username: "Maryse Daniel",
+            imageUrl: "https://picsum.photos/300/200?random",
+          },
         },
       ],
     };

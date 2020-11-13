@@ -8,7 +8,7 @@ const routes = [
   },
   {
     path: "/selected-post-id",
-    name: "SelectedPost",
+    name: "ShowPost",
     component: () => import("../views/ShowPost.vue"),
   },
   {
