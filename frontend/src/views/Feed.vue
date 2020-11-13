@@ -2,17 +2,13 @@
   <main>
     <h1>This is the page with all the posts</h1>
     <NewPost />
-    <Post
-      v-for="post in feedPosts"
-      :key="post.id"
-      :post="post"
-    />
+    <Post v-for="post in feedPosts" :key="post.id" :post="post" />
     <router-view />
   </main>
 </template>
 
 <script>
-//import axios from "axios";
+import axios from "axios";
 
 import NewPost from "../components/NewPost.vue";
 import Post from "../components/Post.vue";
@@ -60,12 +56,12 @@ export default {
       ],
     };
   },
-  /*mounted() {
+  mounted() {
     axios
       .get("http://localhost:3000/api/posts", {
-        headers: {
+        /*headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
-        },
+        },*/
       })
       .then((response) => {
         this.feedPosts = response.data;
@@ -73,7 +69,7 @@ export default {
       .catch((error) => {
         console.log(error);
       });
-  },*/
+  },
 };
 </script>
 

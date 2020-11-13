@@ -47,11 +47,26 @@ export default {
         postData.append("image", this.post.image);
         postData.append("content", this.post.content);
         //we put image and content of post in a FormData and check if it's not empty
+        axios.interceptors.request.use(
+          (config) => {
+            // perform a task before the request is sent
+            console.log("Request was sent");
+
+            return config;
+          },
+          (error) => {
+            // handle the error
+            return Promise.reject(error);
+          }
+        );
+
         axios
-          .post("http://localhost:3000/api/posts/create", postData, {
+          .post("http://localhost:3000/api/posts", postData, {
+            /* Verif token user in SessionStorage before posting
             headers: {
               Authorization: "Bearer " + window.localStorage.getItem("token"),
             },
+            */
           })
           .then((response) => {
             if (response) {
