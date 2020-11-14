@@ -3,11 +3,11 @@
     <figure id="post-user-info">
       <img
         class="profile-picture"
-        :src="post.user.imageUrl"
-        :alt="'Photo de profil de ' + post.user.username"
+        :src="post.userImageUrl"
+        :alt="'Photo de profil de ' + post.username"
       />
       <figcaption>
-        {{ post.user.username }}<br />
+        {{ post.username }}<br />
         {{ post.createdAt }}
       </figcaption>
     </figure>
@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     showPost() {
-      console.log(this.post.id);
+      console.log(this.post);
       //zoomer le post et afficher les commentaires
     },
   },
@@ -63,6 +63,11 @@ export default {
 }
 #post-content {
   margin: 0px 50px;
+}
+#post-content img {
+  max-width: 100%;
+  max-height: 500px;
+  margin: 10px;
 }
 figcaption {
   margin: 5px;

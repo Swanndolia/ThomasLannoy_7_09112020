@@ -27,6 +27,7 @@
 
 <script>
 import axios from "axios"; //axio is used to make request on API
+import { request } from "http";
 
 export default {
   name: "NewPost",
@@ -43,14 +44,24 @@ export default {
     createPost() {
       const postData = new FormData();
       if (this.post.content || this.post.image) {
-        postData.append("user", this.post.user);
+        // while we don't have backend for users
+        if (!this.post.username) {
+          this.post.username = "Jonhathan desmoulin";
+        }
+        if (!this.post.userImageUrl) {
+          this.post.userImageUrl = "https://picsum.photos/300/200?random";
+        }
+        postData.append("username", this.post.username);
+        postData.append("userId", this.post.userId);
+        postData.append("userImageUrl", this.post.userImageUrl);
         postData.append("image", this.post.image);
+        postData.append("imageUrl", this.post.image.name);
         postData.append("content", this.post.content);
         //we put image and content of post in a FormData and check if it's not empty
         axios.interceptors.request.use(
           (config) => {
             // perform a task before the request is sent
-            console.log("Request was sent");
+            console.log(request);
 
             return config;
           },
