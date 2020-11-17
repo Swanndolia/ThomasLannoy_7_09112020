@@ -7,7 +7,7 @@
         alt="logo-groupomania"
       />
     </router-link>
-    <nav>
+    <nav v-if="!userIsSigned">
       <NavLink url="/" text="Accueil" />
       <NavLink url="/profile" text="Profile" />
       <button type="button" @click="showNotifs">Notifications</button>
@@ -31,6 +31,11 @@ export default {
   components: {
     NavLink,
     Footer,
+  },
+  data() {
+    return {
+      userIsSigned: localStorage.getItem("token"),
+    };
   },
   methods: {
     disconnect() {
@@ -58,5 +63,9 @@ h1 {
   width: 50px;
   height: 50px;
   border-radius: 50%;
+}
+html {
+  font-family: "Roboto", sans-serif;
+  font-size: 14px;
 }
 </style>

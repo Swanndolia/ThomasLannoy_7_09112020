@@ -8,18 +8,18 @@
       />
       <figcaption>
         {{ post.username }}<br />
-        {{ post.createdAt }}
+        <span id="date">{{ post.createdAt }}</span>
       </figcaption>
     </figure>
     <div id="post-content">
       <p>{{ post.content }}</p>
-      <div v-if="post.imageUrl">
+      <div v-if="post.imageUrl != 'http://localhost:3000/images/undefined'">
         <img :src="post.imageUrl" :alt="'Image du post'" />
       </div>
     </div>
     <div id="react">
-        <p>Reagir</p>
-        <p>Commenter</p>
+      <p>Reagir</p>
+      <p>Commenter</p>
     </div>
   </div>
 </template>
@@ -76,7 +76,20 @@ figcaption {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  margin: 10px 30px;
+  margin: 0px 30px;
   border-top: solid 1px;
+  & p {
+    width: 40%;
+    text-align: center;
+    padding: 15px 0px;
+    border: dashed #d2d2d2;
+    border-radius: 20px;
+    cursor: pointer;
+    border-width: 1px;
+  }
+}
+#date{
+  color: #b2b2b2;
+  font-size: 12px; 
 }
 </style>

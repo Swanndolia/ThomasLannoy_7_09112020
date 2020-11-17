@@ -2,7 +2,11 @@
   <main>
     <h1>This is the page with all the posts</h1>
     <NewPost />
-    <Post v-for="post in feedPosts.slice().reverse()" :key="post.id" :post="post" />
+    <Post
+      v-for="post in feedPosts.slice().reverse()"
+      :key="post.id"
+      :post="post"
+    />
     <router-view />
   </main>
 </template>
@@ -32,7 +36,6 @@ export default {
         },*/
       })
       .then((response) => {
-        console.log(response.data);
         this.feedPosts = response.data;
       })
       .catch((error) => {

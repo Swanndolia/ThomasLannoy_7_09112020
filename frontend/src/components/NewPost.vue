@@ -27,7 +27,6 @@
 
 <script>
 import axios from "axios"; //axio is used to make request on API
-import { request } from "http";
 
 export default {
   name: "NewPost",
@@ -54,22 +53,13 @@ export default {
         postData.append("username", this.post.username);
         postData.append("userId", this.post.userId);
         postData.append("userImageUrl", this.post.userImageUrl);
-        postData.append("image", this.post.image);
-        postData.append("imageUrl", this.post.image.name);
+        if (this.post.imageUrl != "") {
+          postData.append("image", this.post.image);
+          postData.append("imageUrl", this.post.image.name);
+        }
         postData.append("content", this.post.content);
         //we put image and content of post in a FormData and check if it's not empty
-        axios.interceptors.request.use(
-          (config) => {
-            // perform a task before the request is sent
-            console.log(request);
 
-            return config;
-          },
-          (error) => {
-            // handle the error
-            return Promise.reject(error);
-          }
-        );
 
         axios
           .post("http://localhost:3000/api/posts", postData, {

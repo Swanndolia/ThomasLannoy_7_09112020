@@ -2,10 +2,11 @@ const Post = require("../models/Post");
 
 exports.createPost = (req, res, next) => {
   const postObject = req.body;
+  const date = new Date();
   const post = new Post({
     ...postObject,
     imageUrl: `${req.protocol}://${req.get("host")}/images/${req.body.imageUrl}`,
-    createdAt: Date.now() ,
+    createdAt: date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear() + '  ' + date.getHours() + ':' + date.getMinutes(),
   });
   post
     .save()
