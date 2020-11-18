@@ -13,7 +13,7 @@
 
 <script>
 import axios from "axios";
-
+import * as storage from "../modules/storage.js";
 import NewPost from "../components/NewPost.vue";
 import Post from "../components/Post.vue";
 
@@ -31,9 +31,9 @@ export default {
   mounted() {
     axios
       .get("http://localhost:3000/api/posts", {
-        /*headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },*/
+        headers: {
+          Authorization: "Bearer " + storage.getStorage("token"),
+        },
       })
       .then((response) => {
         this.feedPosts = response.data;

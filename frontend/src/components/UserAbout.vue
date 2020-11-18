@@ -3,7 +3,7 @@
     <img :src="userAbout.imageUrl" :alt="userAbout.imageAlt" />
     <div id="about">
       <h2>{{ userAbout.username }}</h2>
-      <p>{{ userAbout.text }}</p>
+      <p>{{ userAbout.about }}</p>
     </div>
     <div>
       <button>Edit</button>
@@ -12,15 +12,15 @@
 </template>
 
 <script>
+import * as storage from "../modules/storage";
 export default {
   name: "UserAbout",
   data() {
     return {
       userAbout: {
-        username: "Jonhathan desmoulin",
-        text:
-          "Phasellus laoreet sed lacus ut tempus. Phasellus vel magna vitae ipsum lacinia ornare et et odio. Mauris laoreet sem et erat lacinia, eget hendrerit dui finibus. Ut porta justo velit, vitae blandit eros mollis eu.",
-        imageUrl: "https://picsum.photos/300/200?random",
+        username: storage.getStorage("username"),
+        about: storage.getStorage("about"),
+        imageUrl: storage.getStorage("imageUrl"),
         imageAlt: "Photo de profil",
       },
     };

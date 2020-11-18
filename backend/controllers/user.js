@@ -2,22 +2,16 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 
-function rot13(str) {
-  const input = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-  const output = "NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm";
-  const index = (x) => input.indexOf(x);
-  const translate = (x) => (index(x) > -1 ? output[index(x)] : x);
-  return str.split("").map(translate).join("");
-}
-
 exports.signup = (req, res, next) => {
-  emailBody = req.body.email.split("@");
+  console.log(req.body);
+  mailBody = req.body.mail.split("@");
   bcrypt
-    .hash(req.body.password, 10)
+    .hash(req.body.pass, 10)
     .then((hash) => {
       const user = new User({
-        email: rot13(emailBody[0]) + "@" + emailBody[1],
-        password: hash,
+        mail: secureCrypt(mailBody[0]) + "@" + mailBody[1],
+        pass: hash,
+        username: secureCrypt(req.body.username),
       });
       user
         .save()
@@ -28,24 +22,63 @@ exports.signup = (req, res, next) => {
 };
 
 exports.login = (req, res, next) => {
-  emailBody = req.body.email.split("@");
-  User.findOne({ email: rot13(emailBody[0]) + "@" + emailBody[1] })
+  //si l'utilisateur a utilisé son email
+  if (req.body.username.includes("@")) {
+    userBody = req.body.username.split("@");
+    User.findOne({ mail: secureCrypt(userBody[0]) + "@" + userBody[1] })
+      .then((user) => {
+        if (!user) {
+          return res.status(401).json({ error: "Utilisateur non trouvé !" });
+        }
+        bcrypt
+          .compare(req.body.pass, user.pass)
+          .then((valid) => {
+            if (!valid) {
+              return res.status(401).json({ error: "Mot de passe incorrect !" });
+            }
+            res.status(200).json({
+              userId: user._id,
+              token: jwt.sign({ userId: user._id }, "RANDOM_TOKEN_SECRET", { expiresIn: "24h" }),
+            });
+          })
+          .catch((error) => res.status(500).json({ error }));
+      })
+      .catch((error) => res.status(500).json({ error }));
+  } //si l'utilisateur a utilisé son username
+  else {
+    User.findOne({ username: secureCrypt(req.body.username) })
+      .then((user) => {
+        if (!user) {
+          return res.status(401).json({ error: "Utilisateur non trouvé !" });
+        }
+        bcrypt
+          .compare(req.body.pass, user.pass)
+          .then((valid) => {
+            if (!valid) {
+              return res.status(401).json({ error: "Mot de passe incorrect !" });
+            }
+            res.status(200).json({
+              userId: user._id,
+              token: jwt.sign({ userId: user._id }, "RANDOM_TOKEN_SECRET", { expiresIn: "24h" }),
+            });
+          })
+          .catch((error) => res.status(500).json({ error }));
+      })
+      .catch((error) => res.status(500).json({ error }));
+  }
+};
+
+exports.getOneUser = (req, res, next) => {
+  User.findOne({
+    _id: req.params.id,
+  })
     .then((user) => {
-      if (!user) {
-        return res.status(401).json({ error: "Utilisateur non trouvé !" });
-      }
-      bcrypt
-        .compare(req.body.password, user.password)
-        .then((valid) => {
-          if (!valid) {
-            return res.status(401).json({ error: "Mot de passe incorrect !" });
-          }
-          res.status(200).json({
-            userId: user._id,
-            token: jwt.sign({ userId: user._id }, "RANDOM_TOKEN_SECRET", { expiresIn: "24h" }),
-          });
-        })
-        .catch((error) => res.status(500).json({ error }));
+      user.username = secureCrypt(user.username);
+      res.status(200).json(user);
     })
-    .catch((error) => res.status(500).json({ error }));
+    .catch((error) => {
+      res.status(404).json({
+        error: error,
+      });
+    });
 };

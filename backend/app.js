@@ -6,6 +6,7 @@ const postsRoutes = require("./routes/posts");
 const userRoutes = require("./routes/user");
 const helmet = require('helmet');
 const session = require('express-session');
+require('./middleware/secure-crypt.js')();
 
 mongoose
   .connect("mongodb+srv://swanndolia:cdecdewsxT1@cluster0.jbwnn.mongodb.net/groupomania?retryWrites=true&w=majority", {
@@ -35,6 +36,6 @@ app.use( session({
 app.use(bodyParser.json());
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use("/api/posts", postsRoutes);
-app.use("/api/auth", userRoutes);
+app.use("/api/users", userRoutes);
 
 module.exports = app;

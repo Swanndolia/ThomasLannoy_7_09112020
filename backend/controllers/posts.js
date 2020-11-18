@@ -1,7 +1,7 @@
 const Post = require("../models/Post");
 
 exports.createPost = (req, res, next) => {
-  const postObject = req.body;
+  const postObject = req.body; 
   const date = new Date();
   const post = new Post({
     ...postObject,

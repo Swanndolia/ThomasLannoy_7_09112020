@@ -7,7 +7,7 @@
         alt="logo-groupomania"
       />
     </router-link>
-    <nav v-if="!userIsSigned">
+    <nav id="nav">
       <NavLink url="/" text="Accueil" />
       <NavLink url="/profile" text="Profile" />
       <button type="button" @click="showNotifs">Notifications</button>
@@ -25,7 +25,6 @@
 <script>
 import NavLink from "./components/NavLink.vue";
 import Footer from "./components/Footer.vue";
-
 export default {
   name: "App",
   components: {
@@ -33,13 +32,12 @@ export default {
     Footer,
   },
   data() {
-    return {
-      userIsSigned: localStorage.getItem("token"),
-    };
+    return {};
   },
   methods: {
     disconnect() {
       localStorage.clear();
+      sessionStorage.clear();
     },
     showNotifs() {},
   },
