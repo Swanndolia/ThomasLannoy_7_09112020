@@ -15,7 +15,11 @@
         @click="getAllUsers"
       />
       <button type="submit" @click="searchUser">Rechercher</button>
-      <SearchTab v-for="user in matchingUsers" :key="user.id" :user="user" />
+      <SearchTab
+        v-for="user in matchingUsers.user"
+        :key="user.id"
+        :user="user"
+      />
     </div>
     <nav id="nav">
       <NavLink url="/" text="Accueil" />
@@ -48,7 +52,9 @@ export default {
   data() {
     return {
       allUsers: {},
-      matchingUsers: {},
+      matchingUsers: {
+        user: [],
+      },
       myProfileUrl: "/",
     };
   },
@@ -92,21 +98,41 @@ export default {
         });
     },
     handleSearch(value) {
-      this.searchFilter(value.toLowerCase());
       if (!value) {
-        this.matchingUsers = {};
+        this.matchingUsers = { user: [] };
+      } else {
+        this.searchFilter(value.toLowerCase());
+        for (let k = 0, del = []; k < this.matchingUsers.user.length; k++) {
+          const detailedName = this.matchingUsers.user[k].username
+            .toLowerCase()
+            .split(" ");
+          for (let j = 0; j < detailedName.length; j++) {
+            if (detailedName[j].startsWith(value)) {
+              del[k] = 0;
+              break;
+            }
+            if (!detailedName[j].startsWith(value)) {
+              del[k] = 1;
+            }
+          }
+          if (del[k] == 1) {
+            delete this.matchingUsers.user.splice(k, 1);
+          }
+        }
       }
     },
     searchFilter(value) {
       for (let i = 0; i < Object.keys(this.allUsers).length; i++) {
         const detailedName = this.allUsers[i].username.toLowerCase().split(" ");
         for (let l = 0; l < detailedName.length; l++) {
-          if (detailedName[l].startsWith(value) && value) {
-            this.matchingUsers.user = this.allUsers[i];
+          if (
+            detailedName[l].startsWith(value) &&
+            !this.matchingUsers.user.includes(this.allUsers[i])
+          ) {
+            this.matchingUsers.user.push(this.allUsers[i]);
           }
         }
       }
-      return this.matchingUsers;
     },
   },
 };
