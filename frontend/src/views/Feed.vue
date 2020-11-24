@@ -1,6 +1,6 @@
 <template>
   <main>
-    <h1>This is the page with all the posts</h1>
+    <h1>{{ msg }}</h1>
     <NewPost />
     <Post
       v-for="post in feedPosts.slice().reverse()"
@@ -26,6 +26,7 @@ export default {
   data() {
     return {
       feedPosts: [],
+      msg: "This is the page with all the posts",
     };
   },
   mounted() {

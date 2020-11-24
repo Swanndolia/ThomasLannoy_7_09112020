@@ -10,7 +10,7 @@ const routes = [
     },
   },
   {
-    path: "/selected-post-id",
+    path: "/post/:id",
     name: "ShowPost",
     component: () => import("../views/ShowPost.vue"),
     meta: {
@@ -18,7 +18,7 @@ const routes = [
     },
   },
   {
-    path: "/profile",
+    path: "/profile/:id",
     name: "Profile",
     component: () => import("../views/Profile.vue"),
     meta: {

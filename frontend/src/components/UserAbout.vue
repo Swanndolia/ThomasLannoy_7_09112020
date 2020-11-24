@@ -13,17 +13,32 @@
 
 <script>
 import * as storage from "../modules/storage";
+import axios from "axios";
 export default {
   name: "UserAbout",
   data() {
     return {
-      userAbout: {
-        username: storage.getStorage("username"),
-        about: storage.getStorage("about"),
-        imageUrl: storage.getStorage("imageUrl"),
-        imageAlt: "Photo de profil",
-      },
+      userAbout: {},
     };
+  },
+  props: {
+    userId: {
+      required: true,
+    },
+  },
+  beforeMount() {
+    axios
+      .get("http://localhost:3000/api/users/" + this.userId, {
+        headers: {
+          Authorization: "Bearer " + storage.getStorage("token"),
+        },
+      })
+      .then((response) => {
+        this.userAbout = response.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
 };
 </script>

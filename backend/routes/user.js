@@ -4,8 +4,9 @@ const router = express.Router();
 const auth = require("../middleware/auth");
 const userCtrl = require('../controllers/user');
 
-router.get("/:id", auth, userCtrl.getOneUser);
 router.post('/signup', userCtrl.signup);
 router.post('/login', userCtrl.login);
+router.get("/", auth, userCtrl.getAllUsers);
+router.get("/:id", auth, userCtrl.getOneUser);
 
 module.exports = router;

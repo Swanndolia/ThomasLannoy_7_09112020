@@ -11,7 +11,7 @@
     <input type="password" v-model="creditentials.pass" />
     <div class="form-container">
       <div class="form-container">
-        <button @click="sign">Se connecter</button>
+        <button type="button" @click="sign">Se connecter</button>
         <div class="form-container">
           <label>Maintenir la connection {{ wantToStaySigned }}</label>
           <input type="checkbox" v-model="wantToStaySigned" />
@@ -75,7 +75,6 @@ export default {
         document.getElementById("showMailField").style.display == "inline-block"
       ) {
         userData.mail = this.creditentials.mail;
-        console.log(userData);
         axios
           .post("http://localhost:3000/api/users/signup", userData, {})
           .then((response) => {
@@ -112,6 +111,7 @@ export default {
         })
         .then((response) => {
           if (response) {
+            console.log(token);
             serverUserData = response.data;
             if (this.wantToStaySigned) {
               localStorage.setItem("staySigned", this.wantToStaySigned);

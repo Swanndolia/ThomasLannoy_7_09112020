@@ -3,7 +3,6 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User");
 
 exports.signup = (req, res, next) => {
-  console.log(req.body);
   mailBody = req.body.mail.split("@");
   bcrypt
     .hash(req.body.pass, 10)
@@ -15,7 +14,12 @@ exports.signup = (req, res, next) => {
       });
       user
         .save()
-        .then(() => res.status(201).json({ message: "Utilisateur créé !" }))
+        .then(() =>
+          res.status(201).json({
+            userId: user._id,
+            token: jwt.sign({ userId: user._id }, "RANDOM_TOKEN_SECRET", { expiresIn: "24h" }),
+          })
+        )
         .catch((error) => res.status(400).json({ error }));
     })
     .catch((error) => res.status(500).json({ error }));
@@ -78,6 +82,18 @@ exports.getOneUser = (req, res, next) => {
     })
     .catch((error) => {
       res.status(404).json({
+        error: error,
+      });
+    });
+};
+
+exports.getAllUsers = (req, res, next) => {
+  User.find()
+    .then((users) => {
+      res.status(200).json(users);
+    })
+    .catch((error) => {
+      res.status(400).json({
         error: error,
       });
     });
