@@ -67,7 +67,6 @@ export default {
       }
       updatedUserData.append("username", this.userAbout.username);
       updatedUserData.append("about", this.userAbout.about);
-      console.log(updatedUserData.get("username"));
       axios
         .post(
           "http://localhost:3000/api/users/edit/" + this.userAbout._id,

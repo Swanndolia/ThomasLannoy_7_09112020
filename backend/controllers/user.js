@@ -91,6 +91,8 @@ exports.modifyUser = (req, res, next) => {
   req.body.username = secureCrypt(req.body.username);
   const userObject = req.file
     ? {
+        username: req.body.username,
+        about: req.body.about,
         imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
       }
     : { ...req.body };
