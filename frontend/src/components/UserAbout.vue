@@ -170,6 +170,12 @@ textarea {
   color: #888888;
   &:not(:disabled) {
     color: #222222;
+    &:not(:hover) {
+      &:not(:focus) {
+        transition: all 300ms ease-in-out;
+        filter: blur(3px) brightness(0.5);
+      }
+    }
   }
 }
 textarea {

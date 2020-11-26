@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
+const Post = require("../models/Post");
 
 exports.signup = (req, res, next) => {
   mailBody = req.body.mail.split("@");
@@ -97,8 +98,27 @@ exports.modifyUser = (req, res, next) => {
       }
     : { ...req.body };
   User.updateOne({ _id: req.params.id }, { ...userObject, _id: req.params.id })
-    .then(() => res.status(200).json({ message: "User modifié !" }))
+    .then()
     .catch((error) => res.status(400).json({ error }));
+  Post.find({ userId: req.params.id })
+    .then((posts) => {
+      if (posts[0]) {
+        if (!req.body.imageUrl) {
+          req.body.imageUrl = `${req.protocol}://${req.get("host")}/images/${posts[0].userImageUrl}`;
+        } else {
+          req.body.imageUrl = `${req.protocol}://${req.get("host")}/images/${req.file.filename}`;
+        }
+        Post.updateMany({ userId: req.params.id }, { $set: { username: secureCrypt(req.body.username), userImageUrl: req.body.imageUrl } })
+          .then()
+          .catch((error) => res.status(400).json({ error }));
+      }
+      res.status(200).json({ message: "User et infos des posts modifiées !" });
+    })
+    .catch((error) => {
+      res.status(400).json({
+        error: error,
+      });
+    });
 };
 
 exports.getAllUsers = (req, res, next) => {
