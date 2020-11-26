@@ -12,7 +12,8 @@ router.get("/:userId", auth, postCtrl.getAllPostsFromUser);
 router.get("/:id", auth, postCtrl.getOnePost);
 router.put("/:id", auth, multer, postCtrl.modifyPost);
 router.delete("/:id", auth, postCtrl.deletePost);
-router.post("/:id/like", auth, postCtrl.likeDislikeOrCancel);
-router.post("/:id/comment", auth, postCtrl.commentPost);
+router.post("/:id/react", auth, postCtrl.react);
+router.post("/:id/:commentId/react", auth, postCtrl.reactToComment);
+router.post("/:id/comment", auth, multer, postCtrl.commentPost); 
 
 module.exports = router;

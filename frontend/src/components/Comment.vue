@@ -1,76 +1,63 @@
 <template>
-  <div class="post" :id="post._id">
-    <figure class="post-user-info">
+  <div class="comment" :id="comment._id">
+    <figure class="comment-user-info">
       <div id="info-container">
         <img
           class="profile-picture"
-          :src="post.userImageUrl"
-          :alt="'Photo de profil de ' + post.username"
+          :src="comment.userImageUrl"
+          :alt="'Photo de profil de ' + comment.username"
         />
         <figcaption>
-          {{ post.username }}<br />
-          <span class="date">{{ post.createdAt }}</span>
+          {{ comment.username }}<br />
+          <span class="date">{{ comment.createdAt }}</span>
         </figcaption>
       </div>
       <div class="reacts">
-        <span :key="post.likes" class="likes">{{ post.likes }} </span>
-        <span :key="post.dislikes" class="dislikes">{{ post.dislikes }}</span>
+        <span v-if="comment.likes" class="likes">{{ comment.likes }} </span>
+        <span v-if="comment.dislikes" class="dislikes">{{
+          comment.dislikes
+        }}</span>
       </div>
     </figure>
-    <div class="post-content">
-      <p v-if="post.content != 'null'">{{ post.content }}</p>
-      <div v-if="post.imageUrl != 'http://localhost:3000/images/undefined'">
-        <img :src="post.imageUrl" :alt="'Image du post'" />
+    <div class="comment-content">
+      <p v-if="comment.content != 'null'">{{ comment.content }}</p>
+      <div v-if="comment.imageUrl != 'http://localhost:3000/images/undefined'">
+        <img :src="comment.imageUrl" :alt="'Image du commentaire'" />
       </div>
     </div>
     <div id="react">
       <p
-        @click="addReact('chooseReact' + post._id)"
+        @click="addCommentReact('chooseReact' + comment._id)"
         class="chooseReact"
-        :id="'chooseReact' + post._id"
+        :id="'chooseReact' + comment._id"
       >
         Réagir
       </p>
-      <p @click="showPost">Commenter</p>
+      <p @click="reply">Répondre</p>
     </div>
-    <div class="newcomment" :id="'comments ' + post._id">
-      <NewComment class="new-comment" :postId="post._id" />
-    </div>
-    <section>
-      <Comment
-        v-for="comment in commentsList.slice().reverse()"
-        :key="comment._id"
-        :comment="comment"
-        :post="post"
-      />
-    </section>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import * as storage from "../modules/storage";
-import Comment from "../components/Comment.vue";
-import NewComment from "../components/NewComment.vue";
-
 export default {
-  name: "Post",
-  components: {
-    Comment,
-    NewComment,
-  },
+  name: "Comment",
   data() {
-    return {
-      commentsList: [],
-    };
+    return {};
+  },
+  props: {
+    comment: {
+      type: Object,
+      required: true,
+    },
+    post: {
+      type: Object,
+      required: true,
+    },
   },
   methods: {
-    showPost() {
-      this.commentsList = this.post.comments;
-      document.getElementById("comments " + this.post._id).style.display =
-        "flex";
-    },
-    addReact(id) {
+    addCommentReact(id) {
       const reactData = {
         like: "",
         userId: storage.getStorage("userId"),
@@ -89,10 +76,21 @@ export default {
       if (this.running == true) {
         return;
       }
-      this.running = true;
+      //this.running = true;
+      console.log(
+        "http://localhost:3000/api/posts/" +
+          this.post._id +
+          "/" +
+          this.comment._id +
+          "/react"
+      );
       axios
         .post(
-          "http://localhost:3000/api/posts/" + this.post._id + "/react",
+          "http://localhost:3000/api/posts/" +
+            this.post._id +
+            "/" +
+            this.comment._id +
+            "/react",
           reactData,
           {
             // Verif token user in SessionStorage before posting
@@ -126,23 +124,17 @@ export default {
         .catch((error) => console.log(error));
     },
   },
-  props: {
-    post: {
-      type: Object,
-      required: true,
-    },
-  },
   mounted() {
     const elements = document.getElementsByClassName("chooseReact");
     elements.forEach(() => {
-      if (this.post.usersDisliked.includes(storage.getStorage("userId"))) {
+      if (this.comment.usersDisliked.includes(storage.getStorage("userId"))) {
         document
-          .getElementById("chooseReact" + this.post._id)
+          .getElementById("chooseReact" + this.comment._id)
           .classList.add("reactDislike");
       }
-      if (this.post.usersLiked.includes(storage.getStorage("userId"))) {
+      if (this.comment.usersLiked.includes(storage.getStorage("userId"))) {
         document
-          .getElementById("chooseReact" + this.post._id)
+          .getElementById("chooseReact" + this.comment._id)
           .classList.add("reactLike");
       }
     });
@@ -155,7 +147,6 @@ export default {
   },
 };
 </script>
-
 <style lang="scss" scoped>
 .chooseReact:hover {
   background: linear-gradient(to left, #f2ccf2 50%, #ccf2cc 50%);
@@ -177,7 +168,7 @@ export default {
 .likes,
 .dislikes {
   position: absolute;
-  padding: 5px 10px;
+  padding: 15px 15px;
   border-radius: 50%;
 }
 .likes {
@@ -185,7 +176,7 @@ export default {
 }
 .dislikes {
   background: #f2ccf2;
-  margin-top: 30px;
+  margin-top: 35px;
 }
 .newcomment {
   display: flex;
@@ -199,23 +190,24 @@ input {
   padding: 10px;
   outline: none;
 }
-.post {
-  width: 70%;
+.comment {
+  border: dashed 1px #bbbbbb;
+  width: 90%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   margin: 30px auto;
-  background: #f2f2f2;
+  background: #fcfcfc;
   border-radius: 50px;
 }
-.post-user-info {
+.comment-user-info {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   margin: 10px 20px;
 }
-.post-content {
-  margin: -10px 100px;
+.comment-content {
+  margin: -10px 50px;
   & img {
     width: 100%;
     margin: 10px 0px;
@@ -229,16 +221,15 @@ figcaption {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  margin: 0px 100px;
+  margin: 10px 100px;
   border-top: solid 1px;
   & p {
-    width: 40%;
+    width: 48%;
     text-align: center;
     padding: 15px 0px;
-    border: dashed #aaaaaa;
-    border-radius: 20px;
+    border: solid #bbbbbb;
     cursor: pointer;
-    border-width: 1px;
+    border-width: 0px 1px 1px 1px;
   }
 }
 .date {

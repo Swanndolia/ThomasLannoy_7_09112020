@@ -6,22 +6,21 @@
         alt="logo-groupomania"
       />
     </router-link>
-    <div id="search">
-      <input
-        id="searchInput"
-        type="text"
-        placeholder="Commencez à écrire le nom de quelqu'un..."
-        @input="handleSearch($event.target.value)"
-        @click="getAllUsers"
-      />
-      <button type="submit" @click="searchUser">Rechercher</button>
-      <SearchTab
-        v-for="user in matchingUsers.user"
-        :key="user.id"
-        :user="user"
-      />
-    </div>
     <nav id="nav">
+      <div id="search">
+        <input
+          id="searchInput"
+          type="text"
+          placeholder="Commencez à écrire le nom de quelqu'un..."
+          @input="handleSearch($event.target.value)"
+          @click="getAllUsers"
+        />
+        <SearchTab
+          v-for="user in matchingUsers.user"
+          :key="user.id"
+          :user="user"
+        />
+      </div>
       <NavLink url="/" text="Accueil" />
       <NavLink @click="generateUrl" :url="myProfileUrl" text="Profil" />
       <button type="button" @click="showNotifs">Notifications</button>
@@ -65,7 +64,7 @@ export default {
       console.log("cleared");
     },
     generateUrl() {
-      this.myProfileUrl = "/profile/" + storage.getStorage("userId");
+      this.myProfileUrl = storage.getStorage("userId");
     },
     showNotifs() {
       //show notif code
@@ -98,37 +97,16 @@ export default {
         });
     },
     handleSearch(value) {
-      if (!value) {
-        this.matchingUsers = { user: [] };
-      } else {
+      this.matchingUsers = { user: [] };
+      if (value) {
         this.searchFilter(value.toLowerCase());
-        for (let k = 0, del = []; k < this.matchingUsers.user.length; k++) {
-          const detailedName = this.matchingUsers.user[k].username
-            .toLowerCase()
-            .split(" ");
-          for (let j = 0; j < detailedName.length; j++) {
-            if (detailedName[j].startsWith(value)) {
-              del[k] = 0;
-              break;
-            }
-            if (!detailedName[j].startsWith(value)) {
-              del[k] = 1;
-            }
-          }
-          if (del[k] == 1) {
-            delete this.matchingUsers.user.splice(k, 1);
-          }
-        }
       }
     },
     searchFilter(value) {
       for (let i = 0; i < Object.keys(this.allUsers).length; i++) {
         const detailedName = this.allUsers[i].username.toLowerCase().split(" ");
         for (let l = 0; l < detailedName.length; l++) {
-          if (
-            detailedName[l].startsWith(value) &&
-            !this.matchingUsers.user.includes(this.allUsers[i])
-          ) {
+          if (detailedName[l].startsWith(value)) {
             this.matchingUsers.user.push(this.allUsers[i]);
           }
         }
@@ -141,14 +119,16 @@ export default {
 <style lang="scss">
 a {
   &:not(#logo) {
-    text-decoration: none;
-    background-color: #eeeeee;
-    color: #333333;
-    padding: 2px 6px 2px 6px;
-    border-top: 1px solid #cccccc;
-    border-right: 1px solid #333333;
-    border-bottom: 1px solid #333333;
-    border-left: 1px solid #cccccc;
+    &:not(.user-link) {
+      text-decoration: none;
+      background-color: #eeeeee;
+      color: #333333;
+      padding: 2px 6px 2px 6px;
+      border-top: 1px solid #cccccc;
+      border-right: 1px solid #333333;
+      border-bottom: 1px solid #333333;
+      border-left: 1px solid #cccccc;
+    }
   }
 }
 header,
@@ -176,11 +156,7 @@ html {
   font-size: 14px;
 }
 #searchInput {
+  position: relative;
   width: 260px;
-  -webkit-transition: width 0.4s ease-in-out;
-  transition: width 0.4s ease-in-out;
-  &:focus {
-    width: 350px;
-  }
 }
 </style>

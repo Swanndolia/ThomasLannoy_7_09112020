@@ -9,10 +9,7 @@
       <div id="button-container">
         <label for="file">+</label>
         <input id="file" type="file" @change="onImageChange" />
-        <button id="gag">9gag</button>
-        <div>
-          <button id="poster" @click="createPost">Poster</button>
-        </div>
+        <button id="poster" @click="createPost">Poster</button>
       </div>
     </div>
     <div id="preview">
@@ -29,7 +26,7 @@ export default {
   name: "NewPost",
   data() {
     return {
-      userImageUrl:  storage.getStorage("imageUrl"),
+      userImageUrl: storage.getStorage("imageUrl"),
       post: {
         content: null,
         image: null,
@@ -41,7 +38,7 @@ export default {
     createPost() {
       const postData = new FormData();
       if (this.post.content || this.post.image) {
-        console.log(storage.getAllStorage())
+        console.log(storage.getAllStorage());
         postData.append("username", storage.getStorage("username"));
         postData.append("userId", storage.getStorage("userId"));
         postData.append("userImageUrl", storage.getStorage("imageUrl"));
@@ -51,7 +48,10 @@ export default {
         }
         postData.append("content", this.post.content);
         //we put image and content of post in a FormData and check if it's not empty
-
+        if (this.running == true) {
+          return;
+        }
+        this.running = true;
         axios
           .post("http://localhost:3000/api/posts", postData, {
             // Verif token user in SessionStorage before posting
@@ -62,9 +62,11 @@ export default {
           .then((response) => {
             if (response) {
               window.location.reload();
+              this.running = true;
             }
           })
           .catch((error) => console.log(error));
+        this.running = false;
       }
     },
     onImageChange(e) {
@@ -90,7 +92,7 @@ export default {
   }
   border: solid 1px;
   border-radius: 40px;
-  width: 80%;
+  width: 70%;
   margin: auto;
 }
 #preview {
@@ -107,10 +109,9 @@ input {
   display: none;
 }
 label {
-  position: absolute;
-  padding: 6px 9px;
+  padding: 7px 12px 8px;
   font-weight: 900;
-  margin: 0px 10px;
+  margin: 10px 10px;
   background: black;
   color: white;
   border-radius: 50%;
@@ -121,7 +122,7 @@ textarea {
   padding: 0px 0px 80px;
   min-height: 100%;
   width: 80%;
-  margin: 0px 10%;
+  margin: -10px 10%;
   border: none;
   resize: none;
   &:hover {
@@ -140,13 +141,10 @@ button {
     cursor: pointer;
   }
 }
-#gag {
-  margin: 0px 50px;
-}
 #poster {
-  margin: 5px 10px;
+  margin: 10px 10px;
 }
 .profile-picture {
-  margin: 5px 5px 0px auto;
+  margin: 15px 0px 0px 15px;
 }
 </style>

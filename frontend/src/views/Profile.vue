@@ -1,11 +1,11 @@
 <template>
   <main>
     <h1>{{ msg }}</h1>
-    <UserAbout :userId="userId" />
+    <UserAbout />
     <NewPost />
     <Post
       v-for="post in profilPosts.slice().reverse()"
-      :key="post.id"
+      :key="post._id"
       :post="post"
     />
     <router-view />
@@ -29,8 +29,7 @@ export default {
   data() {
     return {
       profilPosts: [],
-      userId: this.$route.params.id,
-      msg: "This is the page with all the posts",
+      msg: "This is the profile page of " + storage.getStorage("username"),
     };
   },
   mounted() {

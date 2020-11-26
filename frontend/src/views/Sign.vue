@@ -71,6 +71,10 @@ export default {
         pass: this.creditentials.pass,
       };
       //to register
+      if (this.running == true) {
+        return;
+      }
+      this.running = true;
       if (
         document.getElementById("showMailField").style.display == "inline-block"
       ) {
@@ -86,6 +90,7 @@ export default {
             }
           })
           .catch((error) => console.log(error));
+        this.running = false;
       } //to login
       else {
         axios
@@ -99,6 +104,7 @@ export default {
             }
           })
           .catch((error) => console.log(error));
+        this.running = false;
       }
     },
     storeInfo(token, userId) {
@@ -120,7 +126,6 @@ export default {
             storage.setStorage("userId", userId);
             storage.setStorage("username", serverUserData.username);
             storage.setStorage("imageUrl", serverUserData.imageUrl);
-            storage.setStorage("about", serverUserData.about);
             this.$router.push({ name: "Feed" });
           }
         })

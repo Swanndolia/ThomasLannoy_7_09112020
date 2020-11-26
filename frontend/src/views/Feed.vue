@@ -4,11 +4,11 @@
     <NewPost />
     <Post
       v-for="post in feedPosts.slice().reverse()"
-      :key="post.id"
+      :key="post._id"
       :post="post"
     />
-    <router-view />
   </main>
+  <router-view />
 </template>
 
 <script>

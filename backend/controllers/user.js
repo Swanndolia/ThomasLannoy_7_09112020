@@ -87,6 +87,18 @@ exports.getOneUser = (req, res, next) => {
     });
 };
 
+exports.modifyUser = (req, res, next) => {
+  req.body.username = secureCrypt(req.body.username);
+  const userObject = req.file
+    ? {
+        imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
+      }
+    : { ...req.body };
+  User.updateOne({ _id: req.params.id }, { ...userObject, _id: req.params.id })
+    .then(() => res.status(200).json({ message: "User modifié !" }))
+    .catch((error) => res.status(400).json({ error }));
+};
+
 exports.getAllUsers = (req, res, next) => {
   User.find()
     .then((users) => {

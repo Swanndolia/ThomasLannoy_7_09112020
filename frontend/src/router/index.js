@@ -10,25 +10,9 @@ const routes = [
     },
   },
   {
-    path: "/post/:id",
-    name: "ShowPost",
-    component: () => import("../views/ShowPost.vue"),
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  {
-    path: "/profile/:id",
+    path: "/:id",
     name: "Profile",
     component: () => import("../views/Profile.vue"),
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  {
-    path: "/profile/edit",
-    name: "EditProfile",
-    component: () => import("../views/EditProfile.vue"),
     meta: {
       requiresAuth: true,
     },
