@@ -1,13 +1,25 @@
 <template>
   <div id="user-about">
-    <label
-      ><input
-        @change="onImageChange"
-        id="file-input"
-        type="file"
-        class="input"
-        disabled /><img :src="userAbout.imageUrl" :alt="userAbout.imageAlt"
-    /></label>
+    <div id="label-container">
+      <label
+        ><input
+          @change="onImageChange"
+          id="file-input"
+          type="file"
+          class="input"
+          disabled />
+        <div id="info">
+          <p>
+            Click here to edit<br />
+            your profile picture
+          </p>
+        </div>
+        <img
+          id="editablePicture"
+          :src="userAbout.imageUrl"
+          :alt="userAbout.imageAlt"
+      /></label>
+    </div>
     <div id="about">
       <button id="edit-btn" @click="editMyProfile">Edit</button>
       <button id="save-btn" @click="saveMyProfile">Enregistrer</button>
@@ -55,11 +67,15 @@ export default {
       this.elements.forEach((el) => el.removeAttribute("disabled"));
       document.getElementById("edit-btn").style.display = "none";
       document.getElementById("save-btn").style.display = "inline-block";
+      document.getElementById("editablePicture").classList.add("editimg");
+      document.getElementById("info").style.display = "inline-block";
     },
     saveMyProfile() {
       this.elements.forEach((el) => el.setAttribute("disabled", true));
       document.getElementById("edit-btn").style.display = "inline-block";
       document.getElementById("save-btn").style.display = "none";
+      document.getElementById("editablePicture").classList.remove("editimg");
+      document.getElementById("info").style.display = "none";
       const updatedUserData = new FormData();
       if (this.userAbout.image) {
         updatedUserData.append("image", this.userAbout.image);
@@ -115,20 +131,34 @@ export default {
 
 <style lang="scss" scoped>
 img {
+  transition: all 300ms ease-in-out;
   min-width: 300px;
   min-height: 200px;
   max-width: 300px;
   max-height: 200px;
 }
+#info {
+  color: #dddddd;
+  font-size: 15px;
+  width: 300px;
+  height: 200px;
+  margin-top: 65px;
+  display: none;
+  position: absolute;
+  text-align: center;
+  z-index: 1;
+}
+.editimg {
+  transition: all 300ms ease-in-out;
+  filter: blur(3px) brightness(0.5);
+}
 #file-input {
   display: none;
 }
-.edit::placeholder {
-  color: black;
-}
 input[type="text"],
 textarea {
-  font: inherit;
+  font-size: inherit;
+  font-style: inherit;
   overflow: hidden;
   outline: none;
   background: none;
@@ -137,6 +167,10 @@ textarea {
   margin: -10px 5%;
   border: none;
   resize: none;
+  color: #888888;
+  &:not(:disabled) {
+    color: #222222;
+  }
 }
 textarea {
   padding: 0px 0px 74px;
