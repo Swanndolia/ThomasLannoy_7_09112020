@@ -121,8 +121,9 @@ export default {
             if (this.wantToStaySigned) {
               localStorage.setItem("staySigned", this.wantToStaySigned);
             }
+            console.log(typeof userId)
             storage.setStorage("token", token);
-            storage.setStorage("userId", userId);
+            storage.setStorage("userId", userId.toString());
             storage.setStorage("username", serverUserData.username);
             storage.setStorage("imageUrl", serverUserData.imageUrl);
             this.$router.push({ name: "Feed" });

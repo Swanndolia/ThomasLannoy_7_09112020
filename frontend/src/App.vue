@@ -1,7 +1,7 @@
 <template>
   <header>
-    <router-link id="logo" to="/">
-      <img
+    <router-link id="logo-link" to="/">
+      <img id="logo"
         src="./assets/img/icon-left-font-monochrome-black.svg"
         alt="logo-groupomania"
       />
@@ -87,7 +87,7 @@ export default {
           for (let i = 0; i < response.data.length; i++) {
             this.allUsers[i] = {
               username: this.removeCrypt(response.data[i].username),
-              userId: response.data[i]._id,
+              userId: response.data[i].id,
               imageUrl: response.data[i].imageUrl,
             };
           }
@@ -118,7 +118,7 @@ export default {
 
 <style lang="scss">
 a {
-  &:not(#logo) {
+  &:not(#logo-link) {
     &:not(.user-link) {
       text-decoration: none;
       background-color: #eeeeee;
@@ -130,6 +130,9 @@ a {
       border-left: 1px solid #cccccc;
     }
   }
+}
+#logo{
+  width: 70%;
 }
 header,
 footer {

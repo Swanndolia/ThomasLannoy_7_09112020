@@ -1,5 +1,5 @@
 <template>
-  <div class="comment" :id="comment._id">
+  <div class="comment" :id="comment.id">
     <figure class="comment-user-info">
       <div id="info-container">
         <img
@@ -15,14 +15,14 @@
       <div class="reacts">
         <button
           class="dropdown-button"
-          :id="'edit-btn-comment ' + this.post._id"
+          :id="'edit-btn-comment ' + this.post.id"
           @click="showPostMenu"
         >
           <p>.</p>
           <p>.</p>
           <p>.</p>
         </button>
-        <div :id="'edit-menu-comment ' + this.post._id" class="dropdown-content">
+        <div :id="'edit-menu-comment ' + this.post.id" class="dropdown-content">
           <button @click="editPost">Modifier</button>
           <button @click="deletePost">Supprimer</button>
           <button id="cancel-btn" @click="hidePostMenu">Annuler</button>
@@ -35,15 +35,15 @@
     </figure>
     <div class="comment-content">
       <p v-if="comment.content != 'null'">{{ comment.content }}</p>
-      <div v-if="comment.imageUrl != 'http://localhost:3000/images/undefined'">
+      <div v-if="comment.imageUrl != null">
         <img :src="comment.imageUrl" :alt="'Image du commentaire'" />
       </div>
     </div>
     <div id="react">
       <p
-        @click="addCommentReact('chooseReact' + comment._id)"
+        @click="addCommentReact('chooseReact' + comment.id)"
         class="chooseReact"
-        :id="'chooseReact' + comment._id"
+        :id="'chooseReact' + comment.id"
       >
         Réagir
       </p>
@@ -72,11 +72,11 @@ export default {
   },
   methods: {
     showPostMenu() {
-      document.getElementById("edit-menu-comment " + this.post._id).style.display =
+      document.getElementById("edit-menu-comment " + this.post.id).style.display =
         "flex";
     },
     hidePostMenu() {
-      document.getElementById("edit-menu-comment " + this.post._id).style.display =
+      document.getElementById("edit-menu-comment " + this.post.id).style.display =
         "none";
     },
     addCommentReact(id) {
@@ -101,17 +101,17 @@ export default {
       //this.running = true;
       console.log(
         "http://localhost:3000/api/posts/" +
-          this.post._id +
+          this.post.id +
           "/" +
-          this.comment._id +
+          this.comment.id +
           "/react"
       );
       axios
         .post(
           "http://localhost:3000/api/posts/" +
-            this.post._id +
+            this.post.id +
             "/" +
-            this.comment._id +
+            this.comment.id +
             "/react",
           reactData,
           {
@@ -151,7 +151,7 @@ export default {
     comments.forEach(() => {
       if (storage.getStorage("userId") != this.comment.userId) {
         document.getElementById(
-          "edit-btn-comment " + this.comment._id
+          "edit-btn-comment " + this.comment.id
         ).style.visibility = "hidden";
       }
     });
@@ -159,12 +159,12 @@ export default {
     elements.forEach(() => {
       if (this.comment.usersDisliked.includes(storage.getStorage("userId"))) {
         document
-          .getElementById("chooseReact" + this.comment._id)
+          .getElementById("chooseReact" + this.comment.id)
           .classList.add("reactDislike");
       }
       if (this.comment.usersLiked.includes(storage.getStorage("userId"))) {
         document
-          .getElementById("chooseReact" + this.comment._id)
+          .getElementById("chooseReact" + this.comment.id)
           .classList.add("reactLike");
       }
     });

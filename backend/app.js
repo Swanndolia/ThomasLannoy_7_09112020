@@ -5,6 +5,7 @@ const session = require("express-session");
 const db = require("./models/index");
 const postsRoutes = require("./routes/posts.routes");
 const userRoutes = require("./routes/users.routes");
+const path = require("path");
 require("./middleware/secure-crypt.js")();
 
 const app = express();
@@ -28,12 +29,12 @@ app.use(
   })
 );
 
-app.use(bodyParser.json());
-
 db.sequelize.sync().then(() => {
   console.log("synced db.");
 });
 
+app.use(bodyParser.json());
+app.use("/images", express.static(path.join(__dirname, "images")));
 app.use("/api/posts", postsRoutes);
 app.use("/api/users", userRoutes);
 

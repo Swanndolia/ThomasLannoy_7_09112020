@@ -8,7 +8,7 @@
     <div id="button-container">
       <label
         >+<input
-          :id="'file-comment ' + comment._id"
+          :id="'file-comment ' + comment.id"
           type="file"
           @change="onImageChange"
       /></label>

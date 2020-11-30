@@ -1,5 +1,5 @@
 <template>
-  <div class="post" :id="post._id">
+  <div class="post" :id="post.id">
     <figure class="post-user-info">
       <div id="info-container">
         <img
@@ -15,14 +15,14 @@
       <div class="reacts">
         <button
           class="dropdown-button"
-          :id="'edit-btn ' + this.post._id"
+          :id="'edit-btn ' + this.post.id"
           @click="showPostMenu"
         >
           <p>.</p>
           <p>.</p>
           <p>.</p>
         </button>
-        <div :id="'edit-menu ' + this.post._id" class="dropdown-content">
+        <div :id="'edit-menu ' + this.post.id" class="dropdown-content">
           <button @click="editPost">Modifier</button>
           <button @click="deletePost">Supprimer</button>
           <button id="cancel-btn" @click="hidePostMenu">Annuler</button>
@@ -33,27 +33,27 @@
     </figure>
     <div class="post-content">
       <p v-if="post.content != 'null'">{{ post.content }}</p>
-      <div v-if="post.imageUrl != 'http://localhost:3000/images/undefined'">
+      <div v-if="post.imageUrl != null">
         <img :src="post.imageUrl" :alt="'Image du post'" />
       </div>
     </div>
     <div id="react">
       <p
-        @click="addReact('chooseReact' + post._id)"
+        @click="addReact('chooseReact' + post.id)"
         class="chooseReact"
-        :id="'chooseReact' + post._id"
+        :id="'chooseReact' + post.id"
       >
         Réagir
       </p>
       <p @click="showPost">Commenter</p>
     </div>
-    <div class="newcomment" :id="'comments ' + post._id">
-      <NewComment class="new-comment" :postId="post._id" />
+    <div class="newcomment" :id="'comments ' + post.id">
+      <NewComment class="new-comment" :postId="post.id.toString()" />
     </div>
     <section>
       <Comment
         v-for="comment in commentsList.slice().reverse()"
-        :key="comment._id"
+        :key="comment.id"
         :comment="comment"
         :post="post"
       />
@@ -80,16 +80,19 @@ export default {
   },
   methods: {
     showPostMenu() {
-      document.getElementById("edit-menu " + this.post._id).style.display =
+      document.getElementById("edit-menu " + this.post.id).style.display =
         "flex";
     },
+    log() {
+      console.log(this.post);
+    },
     hidePostMenu() {
-      document.getElementById("edit-menu " + this.post._id).style.display =
+      document.getElementById("edit-menu " + this.post.id).style.display =
         "none";
     },
     showPost() {
       this.commentsList = this.post.comments;
-      document.getElementById("comments " + this.post._id).style.display =
+      document.getElementById("comments " + this.post.id).style.display =
         "flex";
     },
     addReact(id) {
@@ -114,7 +117,7 @@ export default {
       this.running = true;
       axios
         .post(
-          "http://localhost:3000/api/posts/" + this.post._id + "/react",
+          "http://localhost:3000/api/posts/" + this.post.id + "/react",
           reactData,
           {
             // Verif token user in SessionStorage before posting
@@ -125,6 +128,7 @@ export default {
         )
         .then((response) => {
           if (response) {
+            console.log(response.data);
             if (response.data.message.includes("Dislike ajouté")) {
               document
                 .getElementById(id)
@@ -158,20 +162,26 @@ export default {
     const posts = document.getElementsByClassName("post");
     posts.forEach(() => {
       if (storage.getStorage("userId") != this.post.userId) {
-        document.getElementById("edit-btn " + this.post._id).style.visibility =
+        document.getElementById("edit-btn " + this.post.id).style.visibility =
           "hidden";
       }
     });
     const elements = document.getElementsByClassName("chooseReact");
     elements.forEach(() => {
-      if (this.post.usersDisliked.includes(storage.getStorage("userId"))) {
+      if (
+        this.post.usersDisliked &&
+        this.post.usersDisliked.includes(storage.getStorage("userId"))
+      ) {
         document
-          .getElementById("chooseReact" + this.post._id)
+          .getElementById("chooseReact" + this.post.id)
           .classList.add("reactDislike");
       }
-      if (this.post.usersLiked.includes(storage.getStorage("userId"))) {
+      if (
+        this.post.usersLiked &&
+        this.post.usersLiked.includes(storage.getStorage("userId"))
+      ) {
         document
-          .getElementById("chooseReact" + this.post._id)
+          .getElementById("chooseReact" + this.post.id)
           .classList.add("reactLike");
       }
     });
@@ -207,7 +217,7 @@ export default {
   align-self: flex-end;
   margin: 0px 20px;
 }
-#cancel-btn{
+#cancel-btn {
   border: transparent;
 }
 .dropdown-content {
@@ -287,7 +297,7 @@ input {
   margin: 10px 20px;
 }
 .post-content {
-  margin: -10px 100px;
+  margin: -10px 5%;
   & img {
     width: 100%;
     margin: 10px 0px;

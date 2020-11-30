@@ -6,5 +6,5 @@
 export default {
   name: "NavLink",
   props: ["url", "text"],
-};
+  };
 </script>

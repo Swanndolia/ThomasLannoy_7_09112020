@@ -5,7 +5,7 @@
     <NewPost />
     <Post
       v-for="post in profilPosts.slice().reverse()"
-      :key="post._id"
+      :key="post.id"
       :post="post"
     />
     <router-view />
