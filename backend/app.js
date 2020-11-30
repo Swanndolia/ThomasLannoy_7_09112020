@@ -1,20 +1,12 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
-const path = require("path");
-const postsRoutes = require("./routes/posts");
-const userRoutes = require("./routes/user");
-const helmet = require('helmet');
-const session = require('express-session');
-require('./middleware/secure-crypt.js')();
+const helmet = require("helmet");
+const session = require("express-session");
+const db = require("./models/index");
+const postsRoutes = require("./routes/posts.routes");
+const userRoutes = require("./routes/users.routes");
+require("./middleware/secure-crypt.js")();
 
-mongoose
-  .connect("mongodb+srv://swanndolia:cdecdewsxT1@cluster0.jbwnn.mongodb.net/groupomania?retryWrites=true&w=majority", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("Connexion à MongoDB réussie !"))
-  .catch(() => console.log("Connexion à MongoDB échouée !"));
 const app = express();
 
 app.use((req, res, next) => {
@@ -23,18 +15,25 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
   next();
 });
-app.use(helmet());
-app.set('trust proxy', 1)
-app.use( session({
-   secret : 's3Cur3',
-   name : 'sessionId',
-   resave : false,
-   saveUninitialized : true,
 
+app.use(helmet());
+
+app.set("trust proxy", 1);
+app.use(
+  session({
+    secret: "s3Cur3",
+    name: "sessionId",
+    resave: false,
+    saveUninitialized: true,
   })
 );
+
 app.use(bodyParser.json());
-app.use("/images", express.static(path.join(__dirname, "images")));
+
+db.sequelize.sync().then(() => {
+  console.log("synced db.");
+});
+
 app.use("/api/posts", postsRoutes);
 app.use("/api/users", userRoutes);
 
