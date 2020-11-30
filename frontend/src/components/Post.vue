@@ -13,6 +13,20 @@
         </figcaption>
       </div>
       <div class="reacts">
+        <button
+          class="dropdown-button"
+          :id="'edit-btn ' + this.post._id"
+          @click="showPostMenu"
+        >
+          <p>.</p>
+          <p>.</p>
+          <p>.</p>
+        </button>
+        <div :id="'edit-menu ' + this.post._id" class="dropdown-content">
+          <button @click="editPost">Modifier</button>
+          <button @click="deletePost">Supprimer</button>
+          <button id="cancel-btn" @click="hidePostMenu">Annuler</button>
+        </div>
         <span :key="post.likes" class="likes">{{ post.likes }} </span>
         <span :key="post.dislikes" class="dislikes">{{ post.dislikes }}</span>
       </div>
@@ -65,6 +79,14 @@ export default {
     };
   },
   methods: {
+    showPostMenu() {
+      document.getElementById("edit-menu " + this.post._id).style.display =
+        "flex";
+    },
+    hidePostMenu() {
+      document.getElementById("edit-menu " + this.post._id).style.display =
+        "none";
+    },
     showPost() {
       this.commentsList = this.post.comments;
       document.getElementById("comments " + this.post._id).style.display =
@@ -133,6 +155,13 @@ export default {
     },
   },
   mounted() {
+    const posts = document.getElementsByClassName("post");
+    posts.forEach(() => {
+      if (storage.getStorage("userId") != this.post.userId) {
+        document.getElementById("edit-btn " + this.post._id).style.visibility =
+          "hidden";
+      }
+    });
     const elements = document.getElementsByClassName("chooseReact");
     elements.forEach(() => {
       if (this.post.usersDisliked.includes(storage.getStorage("userId"))) {
@@ -157,6 +186,48 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.dropdown-button {
+  outline: none;
+  border: none;
+  background: transparent;
+  margin: 60px 0px;
+  position: absolute;
+  border-radius: 50px;
+  padding: 0px 15px 8px;
+  & p {
+    font-size: 30px;
+    line-height: 0%;
+    margin: 0px 0px 8px;
+  }
+}
+.dropdown {
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-self: flex-end;
+  margin: 0px 20px;
+}
+#cancel-btn{
+  border: transparent;
+}
+.dropdown-content {
+  position: absolute;
+  display: none;
+  flex-direction: column;
+  width: 100px;
+  margin: 60px 0px;
+  border: 1px solid;
+  border-radius: 20px;
+  background: #f2f2f2;
+  overflow: hidden;
+  & button {
+    padding: 5px;
+    outline: none;
+    background: transparent;
+    border: none;
+    border-bottom: dashed 1px;
+  }
+}
 .chooseReact:hover {
   background: linear-gradient(to left, #f2ccf2 50%, #ccf2cc 50%);
   background-size: 200%;
@@ -177,6 +248,7 @@ export default {
 .likes,
 .dislikes {
   position: absolute;
+  margin-left: 5px;
   padding: 5px 10px;
   border-radius: 50%;
 }

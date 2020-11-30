@@ -117,7 +117,6 @@ export default {
         })
         .then((response) => {
           if (response) {
-            console.log(token);
             serverUserData = response.data;
             if (this.wantToStaySigned) {
               localStorage.setItem("staySigned", this.wantToStaySigned);

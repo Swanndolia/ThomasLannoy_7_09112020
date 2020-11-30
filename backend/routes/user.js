@@ -12,4 +12,4 @@ router.get("/", auth, userCtrl.getAllUsers);
 router.get("/:id", auth, userCtrl.getOneUser);
 router.post("/edit/:id", auth, multer, userCtrl.modifyUser);
 
-module.exports = router;
+module.exports = router; 
