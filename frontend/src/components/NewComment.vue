@@ -68,7 +68,7 @@ export default {
         this.running = true;
         axios
           .post(
-            "http://localhost:3000/api/posts/" + this.postId + "/comment",
+            "http://localhost:3000/api/commentpost/" + this.postId ,
             CommentData,
             {
               // Verif token user in SessionStorage before Commenting

@@ -4,7 +4,7 @@ const router = express.Router();
 const auth = require("../middleware/auth");
 const multer = require("../config/multer-config");
 
-const usersCtrl = require("../controllers/users.controller.js");
+const usersCtrl = require("../controllers/users.js");
 
 // Create a new User
 router.post("/signup", usersCtrl.signup);

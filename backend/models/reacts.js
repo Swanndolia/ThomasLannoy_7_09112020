@@ -16,7 +16,7 @@ module.exports = (sequelize, Sequelize) => {
         key: "id",
       },
     },
-    value: {
+    react: {
       type: Sequelize.INTEGER,
       default: 0,
     },

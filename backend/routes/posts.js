@@ -4,7 +4,7 @@ const router = express.Router();
 const auth = require("../middleware/auth");
 const multer = require("../config/multer-config");
 
-const postsCtrl = require("../controllers/posts.controller.js");
+const postsCtrl = require("../controllers/posts.js");
 
 // Get all the posts
 router.get("/", auth, postsCtrl.getAllPosts);
@@ -26,11 +26,5 @@ router.delete("/:id", auth, postsCtrl.deletePost);
 
 // React to a post with it's ID
 router.put("/:id/react", postsCtrl.react);
-
-// React to a post comment with the post and comment ID
-router.post("/:id/:commentId/react", auth, postsCtrl.reactToComment);
-
-
-router.post("/:id/comment", auth, multer, postsCtrl.commentPost); 
 
 module.exports = router;

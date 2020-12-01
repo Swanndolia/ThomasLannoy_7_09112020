@@ -3,8 +3,9 @@ const bodyParser = require("body-parser");
 const helmet = require("helmet");
 const session = require("express-session");
 const db = require("./models/index");
-const postsRoutes = require("./routes/posts.routes");
-const userRoutes = require("./routes/users.routes");
+const postsRoutes = require("./routes/posts");
+const usersRoutes = require("./routes/users");
+const commentsRoutes = require("./routes/comments");
 const path = require("path");
 require("./middleware/secure-crypt.js")();
 
@@ -36,6 +37,7 @@ db.sequelize.sync().then(() => {
 app.use(bodyParser.json());
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use("/api/posts", postsRoutes);
-app.use("/api/users", userRoutes);
+app.use("/api/users", usersRoutes);
+app.use("/api/commentpost", commentsRoutes);
 
 module.exports = app;

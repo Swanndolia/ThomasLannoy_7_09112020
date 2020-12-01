@@ -1,11 +1,9 @@
-const db = require("../models");
-
 module.exports = (sequelize, Sequelize) => {
   const Posts = sequelize.define("posts", {
     userId: {
-      type: Sequelize.STRING,
+      type: Sequelize.INTEGER,
       required: true,
-      reference: {
+      references: {
         model: "users",
         key: "id",
       },
@@ -18,6 +16,7 @@ module.exports = (sequelize, Sequelize) => {
     },
   });
   Posts.associate = (models) => {
+    Posts.belongsTo(models.users, { foreignKey: "userId" });
     Posts.hasMany(models.reacts, { foreignKey: "postId" }, { onDelete: "cascade" });
     Posts.hasMany(models.comments, { foreignKey: "postId" }, { onDelete: "cascade" });
   };

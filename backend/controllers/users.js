@@ -1,11 +1,8 @@
 const db = require("../models");
-const User = db.users;
-const Post = db.posts;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const Op = db.Sequelize.Op;
 
-// Create and Save a new User
+// Create and Save a new db.users
 exports.signup = (req, res, next) => {
   mailBody = req.body.mail.split("@");
   bcrypt
@@ -16,7 +13,7 @@ exports.signup = (req, res, next) => {
         pass: hash,
         username: secureCrypt(req.body.username),
       };
-      User.create(user)
+      db.users.create(user)
         .then((user) => {
           res.status(201).json({
             userId: user.id,
@@ -25,7 +22,7 @@ exports.signup = (req, res, next) => {
         })
         .catch((err) => {
           res.status(500).send({
-            message: err.message || "Some error occurred while creating the User.",
+            message: err.message || "Some error occurred while creating the db.users.",
           });
         });
     })
@@ -36,7 +33,7 @@ exports.login = (req, res, next) => {
   //si l'utilisateur a utilisé son email
   if (req.body.username.includes("@")) {
     userBody = req.body.username.split("@");
-    User.findOne({ where: { mail: secureCrypt(userBody[0]) + "@" + userBody[1] } })
+    db.users.findOne({ where: { mail: secureCrypt(userBody[0]) + "@" + userBody[1] } })
       .then((user) => {
         if (!user) {
           return res.status(404).json({ error: "Utilisateur non trouvé !" });
@@ -57,7 +54,7 @@ exports.login = (req, res, next) => {
       .catch((error) => res.status(500).json({ error }));
   } //si l'utilisateur a utilisé son username
   else {
-    User.findOne({ where: { username: secureCrypt(req.body.username) } })
+    db.users.findOne({ where: { username: secureCrypt(req.body.username) } })
       .then((user) => {
         if (!user) {
           return res.status(404).json({ error: "Utilisateur non trouvé !" });
@@ -80,7 +77,7 @@ exports.login = (req, res, next) => {
 };
 
 exports.getOneUser = (req, res, next) => {
-  User.findOne({
+  db.users.findOne({
     where: {
       id: req.params.id,
     },
@@ -101,10 +98,10 @@ exports.modifyUser = (req, res, next) => {
   if (req.body.imageUrl) {
     req.body.imageUrl = `${req.protocol}://${req.get("host")}/images/${req.file.filename}`;
   }
-  User.update({ username: req.body.username, about: req.body.about, imageUrl: req.body.imageUrl }, { where: { id: req.params.id } })
+  db.users.update({ username: req.body.username, about: req.body.about, imageUrl: req.body.imageUrl }, { where: { id: req.params.id } })
     .then()
     .catch((error) => res.status(400).json({ error }));
-  Post.findAll({ userId: req.params.id })
+  db.posts.findAll({ userId: req.params.id })
     .then((posts) => {
       if (posts[0]) {
         if (!req.body.imageUrl) {
@@ -112,8 +109,8 @@ exports.modifyUser = (req, res, next) => {
         } else {
           req.body.imageUrl = `${req.protocol}://${req.get("host")}/images/${req.file.filename}`;
         }
-        Post.update({ username: secureCrypt(req.body.username), userImageUrl: req.body.imageUrl }, { where: { userId: req.params.id } })
-          .then(() => res.status(200).json({ message: "User et infos des posts modifiées !" }))
+        db.posts.update({ username: secureCrypt(req.body.username), userImageUrl: req.body.imageUrl }, { where: { userId: req.params.id } })
+          .then(() => res.status(200).json({ message: "db.users et infos des posts modifiées !" }))
           .catch((error) => res.status(400).json({ error }));
       }
     })
@@ -125,7 +122,7 @@ exports.modifyUser = (req, res, next) => {
 };
 
 exports.getAllUsers = (req, res, next) => {
-  User.findAll()
+  db.users.findAll()
     .then((users) => {
       res.status(200).json(users);
     })
@@ -136,5 +133,5 @@ exports.getAllUsers = (req, res, next) => {
     });
 };
 
-// Delete a User with the specified id in the request
+// Delete a db.users with the specified id in the request
 exports.deleteUser = (req, res, next) => {};

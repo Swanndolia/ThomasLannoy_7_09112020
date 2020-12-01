@@ -1,14 +1,11 @@
 module.exports = (sequelize, Sequelize) => {
   const Comments = sequelize.define("Comments", {
-    content: {
-      type: Sequelize.TEXT,
-    },
     userId: {
       type: Sequelize.INTEGER,
       required: true,
-      reference: {
+      references: {
         model: "users",
-        key: "id", 
+        key: "id",
       },
     },
     postId: {
@@ -18,6 +15,12 @@ module.exports = (sequelize, Sequelize) => {
         model: "posts",
         key: "id",
       },
+    },
+    content: {
+      type: Sequelize.TEXT,
+    },
+    imageUrl: {
+      type: Sequelize.STRING,
     },
   });
   Comments.associate = (models) => {

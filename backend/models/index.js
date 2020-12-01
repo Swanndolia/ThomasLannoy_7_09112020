@@ -1,6 +1,10 @@
 const dbConfig = require("../config/db.config.js");
 
-const Sequelize = require("sequelize");
+const fs = require('fs');
+const path = require('path');
+const Sequelize = require('sequelize');
+const basename = path.basename(__filename);
+const db = {};
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
@@ -8,7 +12,7 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   dialectOptions: {
     timezone: "Etc/GMT0"
   },
-  operatorsAliases: false,
+  logging: false,
 
   pool: {
     max: dbConfig.pool.max,
@@ -17,8 +21,6 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     idle: dbConfig.pool.idle,
   },
 });
-
-const db = {};
 
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
@@ -29,4 +31,3 @@ db.comments = require("./comments.js")(sequelize, Sequelize);
 db.reacts = require("./reacts.js")(sequelize, Sequelize);
 
 module.exports = db;
- 
