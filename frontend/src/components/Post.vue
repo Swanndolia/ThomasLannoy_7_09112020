@@ -116,7 +116,7 @@ export default {
       }
       this.running = true;
       axios
-        .post(
+        .put(
           "http://localhost:3000/api/posts/" + this.post.id + "/react",
           reactData,
           {
@@ -311,7 +311,7 @@ figcaption {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  margin: 0px 100px;
+  margin: 0px 5%;
   border-top: solid 1px;
   & p {
     width: 40%;

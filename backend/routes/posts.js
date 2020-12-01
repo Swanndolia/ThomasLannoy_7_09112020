@@ -25,7 +25,7 @@ router.put("/:id", auth, multer, postsCtrl.modifyPost);
 router.delete("/:id", auth, postsCtrl.deletePost);
 
 // React to a post with it's ID
-router.post("/:id/react", auth, postsCtrl.react);
+router.put("/:id/react", postsCtrl.react);
 
 // React to a post comment with the post and comment ID
 router.post("/:id/:commentId/react", auth, postsCtrl.reactToComment);

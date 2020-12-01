@@ -38,7 +38,6 @@ export default {
     createPost() {
       const postData = new FormData();
       if (this.post.content || this.post.image) {
-        console.log(storage.getAllStorage());
         postData.append("username", storage.getStorage("username"));
         postData.append("userId", storage.getStorage("userId"));
         postData.append("userImageUrl", storage.getStorage("imageUrl"));

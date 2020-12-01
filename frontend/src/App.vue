@@ -1,23 +1,30 @@
 <template>
   <header>
     <router-link id="logo-link" to="/">
-      <img id="logo"
+      <img
+        id="logo"
         src="./assets/img/icon-left-font-monochrome-black.svg"
         alt="logo-groupomania"
       />
     </router-link>
     <nav id="nav">
-      <div id="search">
+      <div
+        @mouseenter="waitSearch = true"
+        @mouseleave="waitSearch = false"
+        id="search"
+      >
         <input
           id="searchInput"
           type="text"
           placeholder="Commencez à écrire le nom de quelqu'un..."
           @input="handleSearch($event.target.value)"
           @click="getAllUsers"
+          @focusout="removeResults"
         />
         <SearchTab
+          @click="search(user)"
           v-for="user in matchingUsers.user"
-          :key="user.id"
+          :key="user.userId"
           :user="user"
         />
       </div>
@@ -50,6 +57,7 @@ export default {
   },
   data() {
     return {
+      waitSearch: false,
       allUsers: {},
       matchingUsers: {
         user: [],
@@ -87,7 +95,7 @@ export default {
           for (let i = 0; i < response.data.length; i++) {
             this.allUsers[i] = {
               username: this.removeCrypt(response.data[i].username),
-              userId: response.data[i].id,
+              userId: response.data[i].id.toString(),
               imageUrl: response.data[i].imageUrl,
             };
           }
@@ -95,6 +103,7 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+      this.handleSearch(document.getElementById("searchInput").value);
     },
     handleSearch(value) {
       this.matchingUsers = { user: [] };
@@ -111,6 +120,15 @@ export default {
           }
         }
       }
+    },
+    removeResults() {
+      if (this.waitSearch == false) {
+        this.matchingUsers = { user: [] };
+      }
+    },
+    search(user) {
+      this.matchingUsers = { user: [] };
+      this.$router.push(user.userId);
     },
   },
 };
@@ -131,7 +149,7 @@ a {
     }
   }
 }
-#logo{
+#logo {
   width: 70%;
 }
 header,

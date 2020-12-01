@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 const Op = db.Sequelize.Op;
 
 // Create and Save a new User
-exports.signup = (req, res) => {
+exports.signup = (req, res, next) => {
   mailBody = req.body.mail.split("@");
   bcrypt
     .hash(req.body.pass, 10)
@@ -17,7 +17,7 @@ exports.signup = (req, res) => {
         username: secureCrypt(req.body.username),
       };
       User.create(user)
-        .then(() => {
+        .then((user) => {
           res.status(201).json({
             userId: user.id,
             token: jwt.sign({ userId: user.id }, "RANDOM_TOKEN_SECRET", { expiresIn: "24h" }),
@@ -32,7 +32,7 @@ exports.signup = (req, res) => {
     .catch((error) => res.status(400).json({ error }));
 };
 
-exports.login = (req, res) => {
+exports.login = (req, res, next) => {
   //si l'utilisateur a utilisé son email
   if (req.body.username.includes("@")) {
     userBody = req.body.username.split("@");
@@ -68,11 +68,10 @@ exports.login = (req, res) => {
             if (!valid) {
               return res.status(401).json({ error: "Mot de passe incorrect !" });
             }
-            res.status(201).json({
+            res.status(200).json({
               userId: user.id,
               token: jwt.sign({ userId: user.id }, "RANDOM_TOKEN_SECRET", { expiresIn: "24h" }),
             });
-            console.log(res.locals);
           })
           .catch((error) => res.status(500).json({ error }));
       })
@@ -80,9 +79,11 @@ exports.login = (req, res) => {
   }
 };
 
-exports.getOneUser = (req, res) => {
+exports.getOneUser = (req, res, next) => {
   User.findOne({
-    id: req.params.id,
+    where: {
+      id: req.params.id,
+    },
   })
     .then((user) => {
       user.username = secureCrypt(user.username);
@@ -95,7 +96,7 @@ exports.getOneUser = (req, res) => {
     });
 };
 
-exports.modifyUser = (req, res) => {
+exports.modifyUser = (req, res, next) => {
   req.body.username = secureCrypt(req.body.username);
   if (req.body.imageUrl) {
     req.body.imageUrl = `${req.protocol}://${req.get("host")}/images/${req.file.filename}`;
@@ -136,4 +137,4 @@ exports.getAllUsers = (req, res, next) => {
 };
 
 // Delete a User with the specified id in the request
-exports.deleteUser = (req, res) => {};
+exports.deleteUser = (req, res, next) => {};

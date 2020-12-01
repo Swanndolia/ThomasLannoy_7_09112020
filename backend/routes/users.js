@@ -19,7 +19,7 @@ router.get("/", auth, usersCtrl.getAllUsers);
 router.get("/:id", auth, usersCtrl.getOneUser);
 
 // Update a User with id
-router.put("/:id", auth, multer,usersCtrl.modifyUser);
+router.put("/:id", auth, multer, usersCtrl.modifyUser);
 
 // Delete a User with id
 router.delete("/:id", auth, usersCtrl.deleteUser);

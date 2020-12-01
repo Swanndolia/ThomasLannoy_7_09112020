@@ -80,7 +80,7 @@ export default {
       ) {
         userData.mail = this.creditentials.mail;
         axios
-          .post("http://localhost:3000/api/users/signup", userData, {})
+          .post("http://localhost:3000/api/users/signup", userData)
           .then((response) => {
             if (response) {
               this.storeInfo(response.data.token, response.data.userId);
@@ -94,7 +94,7 @@ export default {
       } //to login
       else {
         axios
-          .post("http://localhost:3000/api/users/login", userData, {})
+          .post("http://localhost:3000/api/users/login", userData)
           .then((response) => {
             if (response) {
               this.storeInfo(response.data.token, response.data.userId);
@@ -121,7 +121,6 @@ export default {
             if (this.wantToStaySigned) {
               localStorage.setItem("staySigned", this.wantToStaySigned);
             }
-            console.log(typeof userId)
             storage.setStorage("token", token);
             storage.setStorage("userId", userId.toString());
             storage.setStorage("username", serverUserData.username);

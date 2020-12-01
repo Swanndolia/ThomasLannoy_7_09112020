@@ -1,5 +1,5 @@
 <template>
-  <figure v-if="user" :id="user.userId" @click="redirect(user.userId)">
+  <figure v-if="user" :id="user.userId" >
     <img
       class="profile-picture"
       :src="user.imageUrl"
@@ -21,11 +21,6 @@ export default {
     user: {
       type: Object,
       required: true,
-    },
-  },
-  methods: {
-    redirect(id) {
-      this.$router.push(id);
     },
   },
 };
