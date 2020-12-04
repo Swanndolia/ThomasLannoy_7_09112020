@@ -13,16 +13,5 @@ exports.commentPost = (req, res, next) => {
   };
 
 exports.reactToComment = (req, res, next) => {
-    db.posts
-      .findOne({
-        id: req.params.id,
-      })
-      .then((post) => {
-        if (req.body.like == 1) {
-          res.status(201).json({ message: "Like ajouté avec succès !" });
-        }
-        if (req.body.like == -1) {
-          res.status(201).json({ message: "Dislike ajouté avec succès !" });
-        }
-      });
+
   };

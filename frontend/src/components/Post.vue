@@ -4,11 +4,11 @@
       <div id="info-container">
         <img
           class="profile-picture"
-          :src="post.userImageUrl"
-          :alt="'Photo de profil de ' + post.username"
+          :src="post.user.imageUrl"
+          :alt="'Photo de profil de ' + post.user.username"
         />
         <figcaption>
-          {{ post.username }}<br />
+          {{ post.user.username }}<br />
           <span class="date">{{ post.createdAt }}</span>
         </figcaption>
       </div>
@@ -27,8 +27,12 @@
           <button @click="deletePost">Supprimer</button>
           <button id="cancel-btn" @click="hidePostMenu">Annuler</button>
         </div>
-        <span :key="post.likes" class="likes">{{ post.likes }} </span>
-        <span :key="post.dislikes" class="dislikes">{{ post.dislikes }}</span>
+        <span :key="postDetails.likes" class="likes"
+          >{{ postDetails.likes }}
+        </span>
+        <span :key="postDetails.dislikes" class="dislikes">{{
+          postDetails.dislikes
+        }}</span>
       </div>
     </figure>
     <div class="post-content">
@@ -75,6 +79,7 @@ export default {
   },
   data() {
     return {
+      postDetails: this.post,
       commentsList: [],
     };
   },
@@ -82,9 +87,6 @@ export default {
     showPostMenu() {
       document.getElementById("edit-menu " + this.post.id).style.display =
         "flex";
-    },
-    log() {
-      console.log(this.post);
     },
     hidePostMenu() {
       document.getElementById("edit-menu " + this.post.id).style.display =
@@ -97,7 +99,7 @@ export default {
     },
     addReact(id) {
       const reactData = {
-        like: "",
+        react: "",
         userId: storage.getStorage("userId"),
       };
       if (
@@ -107,16 +109,16 @@ export default {
             document.getElementById(id).offsetWidth
         ) == 1
       ) {
-        reactData.like = -1;
+        reactData.react = -1;
       } else {
-        reactData.like = 1;
+        reactData.react = 1;
       }
       if (this.running == true) {
         return;
       }
       this.running = true;
       axios
-        .put(
+        .post(
           "http://localhost:3000/api/posts/" + this.post.id + "/react",
           reactData,
           {
@@ -128,20 +130,21 @@ export default {
         )
         .then((response) => {
           if (response) {
-            console.log(response.data);
-            if (response.data.message.includes("Dislike ajouté")) {
+            if (response.data.react == -1) {
               document
                 .getElementById(id)
                 .classList.remove("reactLike", "chooseReact");
               document.getElementById(id).classList.add("reactDislike");
+              this.postDetails.dislikes++;
             }
-            if (response.data.message.includes("Like ajouté")) {
+            if (response.data.react == 1) {
               document
                 .getElementById(id)
                 .classList.remove("reactDislike", "chooseReact");
               document.getElementById(id).classList.add("reactLike");
+              this.postDetails.likes++;
             }
-            if (response.data.message.includes("retiré")) {
+            if (response.data.message.includes("supprimée")) {
               document
                 .getElementById(id)
                 .classList.remove("reactLike", "reactDislike");
@@ -167,30 +170,31 @@ export default {
       }
     });
     const elements = document.getElementsByClassName("chooseReact");
-    elements.forEach(() => {
-      if (
-        this.post.usersDisliked &&
-        this.post.usersDisliked.includes(storage.getStorage("userId"))
-      ) {
-        document
-          .getElementById("chooseReact" + this.post.id)
-          .classList.add("reactDislike");
-      }
-      if (
-        this.post.usersLiked &&
-        this.post.usersLiked.includes(storage.getStorage("userId"))
-      ) {
-        document
-          .getElementById("chooseReact" + this.post.id)
-          .classList.add("reactLike");
-      }
-    });
     elements.forEach((el) =>
       el.addEventListener("mousemove", (e) => {
         event.target.style.backgroundPositionX = -e.offsetX + "px";
         event.target.classList.add("chooseReact");
       })
     );
+    const reacts = this.post.reacts;
+    for (let i = 0; i < reacts.length; i++) {
+      if (
+        reacts[i].react == -1 &&
+        reacts[i].userId.toString().includes(storage.getStorage("userId"))
+      ) {
+        document
+          .getElementById("chooseReact" + this.post.id)
+          .classList.add("reactDislike");
+      }
+      if (
+        reacts[i].react == 1 &&
+        reacts[i].userId.toString().includes(storage.getStorage("userId"))
+      ) {
+        document
+          .getElementById("chooseReact" + this.post.id)
+          .classList.add("reactLike");
+      }
+    }
   },
 };
 </script>

@@ -8,6 +8,14 @@ module.exports = (sequelize, Sequelize) => {
         key: "id",
       },
     },
+    likes: {
+      type: Sequelize.INTEGER,
+      defaultValue: 0,
+    },
+    dislikes: {
+      type: Sequelize.INTEGER,
+      defaultValue: 0,
+    },
     content: {
       type: Sequelize.TEXT,
     },
@@ -15,10 +23,5 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
     },
   });
-  Posts.associate = (models) => {
-    Posts.belongsTo(models.users, { foreignKey: "userId" });
-    Posts.hasMany(models.reacts, { foreignKey: "postId" }, { onDelete: "cascade" });
-    Posts.hasMany(models.comments, { foreignKey: "postId" }, { onDelete: "cascade" });
-  };
   return Posts;
 };

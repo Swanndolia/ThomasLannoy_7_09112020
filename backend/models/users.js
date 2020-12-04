@@ -19,10 +19,5 @@ module.exports = (sequelize, Sequelize) => {
       defaultValue: "Ceci est une courte description par default, modifiez moi !",
     },
   });
-  Users.associate = (models) => {
-    Users.hasMany(models.posts, { foreignKey: "userId" }, { onDelete: "cascade" });
-    Users.hasMany(models.comments, { foreignKey: "userId" }, { onDelete: "cascade" });
-    Users.hasMany(models.reacts, { foreignKey: "userId" }, { onDelete: "cascade" });
-  };
   return Users;
 };

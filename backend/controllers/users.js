@@ -13,7 +13,8 @@ exports.signup = (req, res, next) => {
         pass: hash,
         username: secureCrypt(req.body.username),
       };
-      db.users.create(user)
+      db.users
+        .create(user)
         .then((user) => {
           res.status(201).json({
             userId: user.id,
@@ -33,7 +34,8 @@ exports.login = (req, res, next) => {
   //si l'utilisateur a utilisé son email
   if (req.body.username.includes("@")) {
     userBody = req.body.username.split("@");
-    db.users.findOne({ where: { mail: secureCrypt(userBody[0]) + "@" + userBody[1] } })
+    db.users
+      .findOne({ where: { mail: secureCrypt(userBody[0]) + "@" + userBody[1] } })
       .then((user) => {
         if (!user) {
           return res.status(404).json({ error: "Utilisateur non trouvé !" });
@@ -54,7 +56,8 @@ exports.login = (req, res, next) => {
       .catch((error) => res.status(500).json({ error }));
   } //si l'utilisateur a utilisé son username
   else {
-    db.users.findOne({ where: { username: secureCrypt(req.body.username) } })
+    db.users
+      .findOne({ where: { username: secureCrypt(req.body.username) } })
       .then((user) => {
         if (!user) {
           return res.status(404).json({ error: "Utilisateur non trouvé !" });
@@ -77,11 +80,12 @@ exports.login = (req, res, next) => {
 };
 
 exports.getOneUser = (req, res, next) => {
-  db.users.findOne({
-    where: {
-      id: req.params.id,
-    },
-  })
+  db.users
+    .findOne({
+      where: {
+        id: req.params.id,
+      },
+    })
     .then((user) => {
       user.username = secureCrypt(user.username);
       res.status(200).json(user);
@@ -98,31 +102,15 @@ exports.modifyUser = (req, res, next) => {
   if (req.body.imageUrl) {
     req.body.imageUrl = `${req.protocol}://${req.get("host")}/images/${req.file.filename}`;
   }
-  db.users.update({ username: req.body.username, about: req.body.about, imageUrl: req.body.imageUrl }, { where: { id: req.params.id } })
-    .then()
+  db.users
+    .update({ username: req.body.username, about: req.body.about, imageUrl: req.body.imageUrl }, { where: { id: req.params.id } })
+    .then(() => res.status(200).json({ message: "db.users et infos des posts modifiées !" }))
     .catch((error) => res.status(400).json({ error }));
-  db.posts.findAll({ userId: req.params.id })
-    .then((posts) => {
-      if (posts[0]) {
-        if (!req.body.imageUrl) {
-          req.body.imageUrl = posts[0].userImageUrl;
-        } else {
-          req.body.imageUrl = `${req.protocol}://${req.get("host")}/images/${req.file.filename}`;
-        }
-        db.posts.update({ username: secureCrypt(req.body.username), userImageUrl: req.body.imageUrl }, { where: { userId: req.params.id } })
-          .then(() => res.status(200).json({ message: "db.users et infos des posts modifiées !" }))
-          .catch((error) => res.status(400).json({ error }));
-      }
-    })
-    .catch((error) => {
-      res.status(400).json({
-        error: error,
-      });
-    });
 };
 
 exports.getAllUsers = (req, res, next) => {
-  db.users.findAll()
+  db.users
+    .findAll()
     .then((users) => {
       res.status(200).json(users);
     })

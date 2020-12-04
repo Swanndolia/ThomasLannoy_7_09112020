@@ -25,6 +25,6 @@ router.put("/:id", auth, multer, postsCtrl.modifyPost);
 router.delete("/:id", auth, postsCtrl.deletePost);
 
 // React to a post with it's ID
-router.put("/:id/react", postsCtrl.react);
+router.post("/:id/react", postsCtrl.react);
 
 module.exports = router;

@@ -1,11 +1,11 @@
 <template>
   <main>
     <h1>{{ msg }}</h1>
-    <UserAbout />
-    <NewPost />
+    <UserAbout :key="this.$route.params.id" />
+    <NewPost @new-post-created="getProfilePosts" v-if="this.$route.params.id == this.userId" />
     <Post
       v-for="post in profilPosts.slice().reverse()"
-      :key="post.id"
+      :key="this.$route.params.id + ' ' + post.id"
       :post="post"
     />
     <router-view />
@@ -28,24 +28,34 @@ export default {
   },
   data() {
     return {
+      msg: "Vous parcourez actuellement le profil de:",
       profilPosts: [],
-      msg: "This is the profile page of " + storage.getStorage("username"),
+      userId: storage.getStorage("userId"),
     };
   },
+  watch: {
+    "$route.params.id": function () {
+      this.getProfilePosts();
+    },
+  },
+  methods: {
+    getProfilePosts() {
+      axios
+        .get("http://localhost:3000/api/posts/" + this.$route.params.id, {
+          headers: {
+            Authorization: "Bearer " + storage.getStorage("token"),
+          },
+        })
+        .then((response) => {
+          this.profilPosts = response.data;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+  },
   mounted() {
-    axios
-      .get("http://localhost:3000/api/posts/" + this.$route.params.id, {
-        params: { userId: this.userId },
-        headers: {
-          Authorization: "Bearer " + storage.getStorage("token"),
-        },
-      })
-      .then((response) => {
-        this.profilPosts = response.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    this.getProfilePosts();
   },
 };
 </script>

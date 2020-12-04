@@ -4,11 +4,11 @@
       <div id="info-container">
         <img
           class="profile-picture"
-          :src="comment.userImageUrl"
-          :alt="'Photo de profil de ' + comment.username"
+          :src="comment.user.imageUrl"
+          :alt="'Photo de profil de ' + comment.user.username"
         />
         <figcaption>
-          {{ comment.username }}<br />
+          {{ comment.user.username }}<br />
           <span class="date">{{ comment.createdAt }}</span>
         </figcaption>
       </div>
@@ -156,8 +156,8 @@ export default {
       }
     });
     const elements = document.getElementsByClassName("chooseReact");
-    elements.forEach(() => {
-      if (this.comment.usersDisliked.includes(storage.getStorage("userId"))) {
+    /*elements.forEach(() => {
+      if (this.comment.reacts.includes(storage.getStorage("userId"))) {
         document
           .getElementById("chooseReact" + this.comment.id)
           .classList.add("reactDislike");
@@ -167,7 +167,7 @@ export default {
           .getElementById("chooseReact" + this.comment.id)
           .classList.add("reactLike");
       }
-    });
+    });*/
     elements.forEach((el) =>
       el.addEventListener("mousemove", (e) => {
         event.target.style.backgroundPositionX = -e.offsetX + "px";
@@ -253,6 +253,7 @@ export default {
 }
 .newcomment {
   display: flex;
+  background: white;
   justify-content: space-around;
   display: none;
   padding: 5px 0px 20px;

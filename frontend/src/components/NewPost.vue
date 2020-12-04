@@ -60,8 +60,7 @@ export default {
           })
           .then((response) => {
             if (response) {
-              window.location.reload();
-              this.running = true;
+              this.$emit("new-post-created", true);
             }
           })
           .catch((error) => console.log(error));

@@ -1,16 +1,12 @@
 const dbConfig = require("../config/db.config.js");
 
-const fs = require('fs');
-const path = require('path');
-const Sequelize = require('sequelize');
-const basename = path.basename(__filename);
-const db = {};
+const Sequelize = require("sequelize");
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
   dialect: dbConfig.dialect,
   dialectOptions: {
-    timezone: "Etc/GMT0"
+    timezone: "Etc/GMT0",
   },
   logging: false,
 
@@ -22,6 +18,8 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   },
 });
 
+const db = {};
+
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
@@ -29,5 +27,16 @@ db.users = require("./users.js")(sequelize, Sequelize);
 db.posts = require("./posts.js")(sequelize, Sequelize);
 db.comments = require("./comments.js")(sequelize, Sequelize);
 db.reacts = require("./reacts.js")(sequelize, Sequelize);
+
+db.users.hasMany(db.posts, { foreignKey: "userId" }, { onDelete: "cascade" });
+db.users.hasMany(db.comments, { foreignKey: "userId" }, { onDelete: "cascade" });
+db.users.hasMany(db.reacts, { foreignKey: "userId" }, { onDelete: "cascade" });
+db.reacts.belongsTo(db.users, { foreignKey: "userId" });
+db.reacts.belongsTo(db.posts, { foreignKey: "postId" });
+db.posts.belongsTo(db.users, { foreignKey: "userId" });
+db.posts.hasMany(db.reacts, { foreignKey: "postId" }, { onDelete: "cascade" });
+db.posts.hasMany(db.comments, { foreignKey: "postId" }, { onDelete: "cascade" });
+db.comments.belongsTo(db.users, { foreignKey: "userId" });
+db.comments.belongsTo(db.posts, { foreignKey: "postId" });
 
 module.exports = db;

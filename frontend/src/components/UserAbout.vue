@@ -10,8 +10,8 @@
           disabled />
         <div id="info">
           <p>
-            Click here to edit<br />
-            your profile picture
+            Cliquez pour modifier<br />
+            votre photo de profil
           </p>
         </div>
         <img
@@ -21,7 +21,7 @@
       /></label>
     </div>
     <div id="about">
-      <button id="edit-btn" @click="editMyProfile">Edit</button>
+      <button id="edit-btn" @click="editMyProfile">Modifier</button>
       <button id="save-btn" @click="saveMyProfile">Enregistrer</button>
       <h2>
         <input

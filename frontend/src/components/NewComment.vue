@@ -79,7 +79,7 @@ export default {
           )
           .then((response) => {
             if (response) {
-              window.location.reload();
+              this.$emit("new-comment-created", true);
             }
           })
           .catch((error) => console.log(error));

@@ -16,6 +16,7 @@
         <input
           id="searchInput"
           type="text"
+          autocomplete="off"
           placeholder="Commencez à écrire le nom de quelqu'un..."
           @input="handleSearch($event.target.value)"
           @click="getAllUsers"
@@ -29,7 +30,7 @@
         />
       </div>
       <NavLink url="/" text="Accueil" />
-      <NavLink @click="generateUrl" :url="myProfileUrl" text="Profil" />
+      <NavLink :key="$route.fullPath" @click="generateUrl" :url="myProfileUrl" text="Profil" />
       <button type="button" @click="showNotifs">Notifications</button>
       <NavLink url="/sign" text="déconnexion" @click="disconnect" />
     </nav>

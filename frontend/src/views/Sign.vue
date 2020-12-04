@@ -39,7 +39,7 @@ export default {
         mail: "",
       },
       wantToStaySigned: true,
-      msg: "This is the page to login",
+      msg: "Bienvenue sur Groupomania, pour continuer connectez ou inscrivez vous !",
     };
   },
   methods: {

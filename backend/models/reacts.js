@@ -1,8 +1,7 @@
 module.exports = (sequelize, Sequelize) => {
-  const Reacts = sequelize.define("Reacts", {
+  const Reacts = sequelize.define("reacts", {
     userId: {
       type: Sequelize.INTEGER,
-      required: true,
       references: {
         model: "users",
         key: "id",
@@ -10,7 +9,6 @@ module.exports = (sequelize, Sequelize) => {
     },
     postId: {
       type: Sequelize.INTEGER,
-      required: true,
       references: {
         model: "posts",
         key: "id",
@@ -18,12 +16,7 @@ module.exports = (sequelize, Sequelize) => {
     },
     react: {
       type: Sequelize.INTEGER,
-      default: 0,
     },
   });
-  Reacts.associate = (models) => {
-    Reacts.belongsTo(models.users, { foreignKey: "userId" });
-    Reacts.belongsTo(models.posts, { foreignKey: "postId" });
-  };
   return Reacts;
 };

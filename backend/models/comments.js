@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  const Comments = sequelize.define("Comments", {
+  const Comments = sequelize.define("comments", {
     userId: {
       type: Sequelize.INTEGER,
       required: true,
@@ -23,9 +23,5 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
     },
   });
-  Comments.associate = (models) => {
-    Comments.belongsTo(models.users, { foreignKey: "userId" });
-    Comments.belongsTo(models.posts, { foreignKey: "postId" });
-  };
   return Comments;
 };
