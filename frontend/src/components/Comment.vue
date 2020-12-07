@@ -221,14 +221,14 @@ export default {
   }
 }
 .chooseReact:hover {
-  background: linear-gradient(to left, #5c1a1f 50%, #296d29 50%);
+  background: linear-gradient(to left, #5c1f24 50%, #2f6d2f 50%);
   background-size: 200%;
 }
 .reactLike {
-  background: #296d29;
+  background: #2f6d2f;
 }
 .reactDislike {
-  background: #5c1a1f;
+  background: #5c1f24;
 }
 #info-container {
   display: flex;
@@ -245,10 +245,10 @@ export default {
   border-radius: 50%;
 }
 .likes {
-  background: #296d29;
+  background: #2f6d2f;
 }
 .dislikes {
-  background: #5c1a1f;
+  background: #5c1f24;
   margin-top: 30px;
 }
 .newcomment {

@@ -90,6 +90,7 @@ export default {
   justify-content: space-between;
 }
 #new-post {
+  background: #2C2F33;
   display: flex;
   flex-direction: column;
   &:hover {

@@ -98,7 +98,7 @@ export default {
           if (response) {
             storage.setStorage("username", this.userAbout.username);
             storage.setStorage("imageUrl", this.userAbout.imageUrl);
-            //show fixed div to say updated
+            this.$emit("profile-update", true);
           }
         })
         .catch((error) => console.log(error));
@@ -182,12 +182,13 @@ textarea {
   padding: 0px 0px 74px;
 }
 button {
+  color: black;
   width: 10%;
   align-self: flex-end;
-  border: 2px solid #2C2F33;
+  border: 2px solid #23272a;
   transition-duration: 0.4s;
   &:hover {
-    background: #23272A;
+    background: #23272a;
     color: white;
     cursor: pointer;
   }
@@ -209,6 +210,6 @@ button {
   width: 100%;
   align-self: flex-start;
   margin: 0px 0px;
-  background: #2C2F33;
+  background: #2c2f33;
 }
 </style>

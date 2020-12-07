@@ -138,6 +138,9 @@ export default {
         .then((response) => {
           if (response) {
             if (response.data.react == -1) {
+              if (document.getElementById(id).classList.contains("reactLike")) {
+                this.postDetails.likes--;
+              }
               document
                 .getElementById(id)
                 .classList.remove("reactLike", "chooseReact");
@@ -145,6 +148,11 @@ export default {
               this.postDetails.dislikes++;
             }
             if (response.data.react == 1) {
+              if (
+                document.getElementById(id).classList.contains("reactDislike")
+              ) {
+                this.postDetails.dislikes--;
+              }
               document
                 .getElementById(id)
                 .classList.remove("reactDislike", "chooseReact");
@@ -152,6 +160,13 @@ export default {
               this.postDetails.likes++;
             }
             if (response.data.message.includes("supprimée")) {
+              if (
+                document.getElementById(id).classList.contains("reactDislike")
+              ) {
+                this.postDetails.dislikes--;
+              } else {
+                this.postDetails.likes--;
+              }
               document
                 .getElementById(id)
                 .classList.remove("reactLike", "reactDislike");
@@ -239,7 +254,7 @@ export default {
   margin: 60px 0px;
   border: 1px solid;
   border-radius: 20px;
-  background: #2C2F33;
+  background: #2c2f33;
   overflow: hidden;
   & button {
     padding: 5px;
@@ -250,14 +265,14 @@ export default {
   }
 }
 .chooseReact:hover {
-  background: linear-gradient(to left, #5c1a1f 50%, #296d29 50%);
+  background: linear-gradient(to left, #5c1f24 50%, #2f6d2f 50%);
   background-size: 200%;
 }
 .reactLike {
-  background: #296d29;
+  background: #2f6d2f;
 }
 .reactDislike {
-  background: #5c1a1f;
+  background: #5c1f24;
 }
 #info-container {
   display: flex;
@@ -274,10 +289,10 @@ export default {
   border-radius: 50%;
 }
 .likes {
-  background: #296d29;
+  background: #2f6d2f;
 }
 .dislikes {
-  background: #5c1a1f;
+  background: #5c1f24;
   margin-top: 30px;
 }
 .newcomment {
@@ -301,7 +316,7 @@ input {
   flex-direction: column;
   justify-content: center;
   margin: 30px auto;
-  background: #2C2F33;
+  background: #2c2f33;
   border-radius: 50px;
   border-bottom: dashed black 1px;
   border-top: dashed black 1px;

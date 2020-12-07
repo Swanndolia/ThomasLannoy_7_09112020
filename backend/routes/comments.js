@@ -8,7 +8,6 @@ const commentsCtrl = require("../controllers/comments.js");
 
 router.post("/:id", auth, multer, commentsCtrl.commentPost); 
 
-// React to a post comment with the post and comment ID
 router.post("/:id/:commentId/react", auth, commentsCtrl.reactToComment);
 
 module.exports = router;

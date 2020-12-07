@@ -1,7 +1,7 @@
 <template>
   <main>
     <h1>{{ msg }}</h1>
-    <UserAbout :key="this.$route.params.id" />
+    <UserAbout @profile-update="getProfilePosts" :key="this.$route.params.id" />
     <NewPost
       @new-post-created="getProfilePosts"
       v-if="this.$route.params.id == this.userId"

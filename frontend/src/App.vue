@@ -3,11 +3,18 @@
     <router-link id="logo-link" to="/">
       <img
         id="logo"
-        src="./assets/img/icon-left-font-monochrome-black.svg"
+        src="./assets/img/icon-left-font-monochrome-white.svg"
         alt="logo-groupomania"
       />
     </router-link>
     <nav id="nav">
+      <NavLink url="/" text="Accueil" />
+      <NavLink
+        :key="$route.fullPath"
+        @click="generateUrl"
+        :url="myProfileUrl"
+        text="Profil"
+      />
       <div
         @mouseenter="waitSearch = true"
         @mouseleave="waitSearch = false"
@@ -22,24 +29,25 @@
           @click="getAllUsers"
           @focusout="removeResults"
         />
-        <SearchTab
-          @click="search(user)"
-          v-for="user in matchingUsers.user"
-          :key="user.userId"
-          :user="user"
-        />
+        <div id="search-result">
+          <SearchTab
+            @click="search(user)"
+            v-for="user in matchingUsers.user"
+            :key="user.userId"
+            :user="user"
+          />
+        </div>
       </div>
-      <NavLink url="/" text="Accueil" />
-      <NavLink :key="$route.fullPath" @click="generateUrl" :url="myProfileUrl" text="Profil" />
-      <button type="button" @click="showNotifs">Notifications</button>
+      <button id="notif-btn" type="button" @click="showNotifs">
+        Notifications
+      </button>
       <NavLink url="/sign" text="déconnexion" @click="disconnect" />
     </nav>
   </header>
   <router-view />
   <footer>
-    <Footer url="/" text="Confidentialité" />
-    <Footer url="/" text="Conditions générales" />
-    <Footer url="/" text="Accueil" />
+    <NavLink url="/" text="Confidentialité" />
+    <NavLink url="/" text="Conditions générales" />
   </footer>
 </template>
 
@@ -47,13 +55,11 @@
 import * as storage from "./modules/storage.js";
 import NavLink from "./components/NavLink.vue";
 import SearchTab from "./components/SearchTab.vue";
-import Footer from "./components/Footer.vue";
 import axios from "axios";
 export default {
   name: "App",
   components: {
     NavLink,
-    Footer,
     SearchTab,
   },
   data() {
@@ -70,7 +76,6 @@ export default {
     disconnect() {
       localStorage.clear();
       sessionStorage.clear();
-      console.log("cleared");
     },
     generateUrl() {
       this.myProfileUrl = storage.getStorage("userId");
@@ -136,33 +141,63 @@ export default {
 </script>
 
 <style lang="scss">
+#search-result {
+  position: absolute;
+}
 a {
   &:not(#logo-link) {
     &:not(.user-link) {
+      color: black;
+      background: white;
       text-decoration: none;
-      background-color: black;
-      color: white;
-      padding: 3px 6px;
+      padding: 5px 10px;
+      border-radius: 20px;
+      transition: ease-in 0.25s;
+      &:hover {
+        background: #2c2f33;
+        color: white;
+      }
     }
+  }
+}
+#notif-btn {
+  color: black;
+  background: white;
+  border: 0px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  outline: transparent;
+  cursor: pointer;
+  transition: ease-in 0.25s;
+  &:hover {
+    background: #2c2f33;
+    color: white;
   }
 }
 #logo {
   width: 70%;
 }
-header,
+header {
+  gap: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0px 15%;
+}
 footer {
+  margin: 20px 15%;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 h1 {
-  text-align: center;
+  margin-left: 15%;
 }
 nav {
+  gap: 10px;
   display: flex;
   align-items: center;
   flex-direction: row;
-  gap: 10px;
 }
 .profile-picture {
   width: 50px;
@@ -170,15 +205,30 @@ nav {
   border-radius: 50%;
 }
 html {
-  background: #23272A;
+  background: #23272a;
   font-family: "Roboto", sans-serif;
   font-size: 14px;
 }
-p,h1,figcaption, input, textarea{
+#search {
+  background: #2c2f33;
+}
+p,
+h1,
+figcaption,
+input,
+textarea,
+button {
   color: #d2d2d2;
 }
 #searchInput {
+  color: white;
+  border: 2px solid white;
+  background: transparent;
+  padding: 5px 10px;
+  border-radius: 20px;
+  outline: transparent;
   position: relative;
+  color: white;
   width: 260px;
 }
 </style>

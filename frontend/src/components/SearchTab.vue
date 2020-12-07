@@ -33,8 +33,7 @@ figure {
   margin: 5px -5px;
   padding: 4px;
   width: 210px;
-  background: #FFFFFF;
-  -webkit-transition: width 0.4s ease-in-out;
+  background: lighten(#2C2F33, 5);
   transition: width 0.4s ease-in-out;
   border-radius: 50px;
   cursor: pointer;
