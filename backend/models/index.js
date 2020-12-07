@@ -1,9 +1,9 @@
 const dbConfig = require("../config/db.config.js");
-
+require("../middleware/secure-crypt.js")();
 const Sequelize = require("sequelize");
 
-const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
-  host: dbConfig.HOST,
+const sequelize = new Sequelize(dbConfig.DB, secureCrypt(dbConfig.USER), secureCrypt(dbConfig.PASSWORD), {
+  host: secureCrypt(dbConfig.HOST),
   dialect: dbConfig.dialect,
   dialectOptions: {
     timezone: "Etc/GMT0",

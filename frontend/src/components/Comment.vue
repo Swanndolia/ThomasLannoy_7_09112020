@@ -210,7 +210,7 @@ export default {
   margin: 60px 0px;
   border: 1px solid;
   border-radius: 20px;
-  background: white;
+  background: #2C2F33;
   overflow: hidden;
   & button {
     padding: 5px;
@@ -221,14 +221,14 @@ export default {
   }
 }
 .chooseReact:hover {
-  background: linear-gradient(to left, #f2ccf2 50%, #ccf2cc 50%);
+  background: linear-gradient(to left, #5c1a1f 50%, #296d29 50%);
   background-size: 200%;
 }
 .reactLike {
-  background: #ccf2cc;
+  background: #296d29;
 }
 .reactDislike {
-  background: #f2ccf2;
+  background: #5c1a1f;
 }
 #info-container {
   display: flex;
@@ -245,15 +245,15 @@ export default {
   border-radius: 50%;
 }
 .likes {
-  background: #ccf2cc;
+  background: #296d29;
 }
 .dislikes {
-  background: #f2ccf2;
+  background: #5c1a1f;
   margin-top: 30px;
 }
 .newcomment {
   display: flex;
-  background: white;
+  background: #2C2F33;
   justify-content: space-around;
   display: none;
   padding: 5px 0px 20px;
@@ -265,13 +265,12 @@ input {
   outline: none;
 }
 .comment {
-  border: dashed 1px #bbbbbb;
   width: 90%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   margin: 30px auto;
-  background: #fcfcfc;
+  background: lighten(#2C2F33, 5);
   border-radius: 50px;
 }
 .comment-user-info {

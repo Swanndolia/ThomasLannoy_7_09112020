@@ -33,7 +33,7 @@ figure {
   margin: 5px -5px;
   padding: 4px;
   width: 210px;
-  background: #d9d9d9;
+  background: #FFFFFF;
   -webkit-transition: width 0.4s ease-in-out;
   transition: width 0.4s ease-in-out;
   border-radius: 50px;
@@ -44,7 +44,6 @@ figure {
 }
 a {
   font-size: 16px;
-  color: inherit;
   text-decoration: none;
 }
 </style>

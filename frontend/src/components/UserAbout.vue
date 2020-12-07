@@ -138,7 +138,7 @@ img {
   max-height: 200px;
 }
 #info {
-  color: #dddddd;
+  color: white;
   font-size: 15px;
   width: 300px;
   height: 200px;
@@ -161,15 +161,15 @@ textarea {
   font-style: inherit;
   overflow: hidden;
   outline: none;
-  background: none;
+  background: transparent;
   min-height: 100%;
   width: 95%;
   margin: -10px 5%;
   border: none;
   resize: none;
-  color: #888888;
+  color: #b2b2b2;
   &:not(:disabled) {
-    color: #222222;
+    color: white;
     &:not(:hover) {
       &:not(:focus) {
         transition: all 300ms ease-in-out;
@@ -184,10 +184,10 @@ textarea {
 button {
   width: 10%;
   align-self: flex-end;
-  border: 2px solid #555555;
+  border: 2px solid #2C2F33;
   transition-duration: 0.4s;
   &:hover {
-    background-color: #555555; /* Green */
+    background: #23272A;
     color: white;
     cursor: pointer;
   }
@@ -209,6 +209,6 @@ button {
   width: 100%;
   align-self: flex-start;
   margin: 0px 0px;
-  background: #f2f2f2;
+  background: #2C2F33;
 }
 </style>

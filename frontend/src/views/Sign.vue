@@ -3,17 +3,17 @@
   <form>
     <span id="showMailField">
       <label for="mail">Adresse mail</label>
-      <input v-model="creditentials.mail" />
+      <input v-model="creditentials.mail" @keyup.enter="sign" />
     </span>
     <label id="userOrMail">Nom d'utilisateur ou Email</label>
-    <input v-model="creditentials.username" />
+    <input v-model="creditentials.username" @keyup.enter="sign" />
     <label>Mot de passe</label>
-    <input type="password" v-model="creditentials.pass" />
+    <input type="password" v-model="creditentials.pass" @keyup.enter="sign" />
     <div class="form-container">
       <div class="form-container">
-        <button type="button" @click="sign">Se connecter</button>
+        <button id="sign-btn" type="button" @click="sign">Se connecter</button>
         <div class="form-container">
-          <label>Maintenir la connection {{ wantToStaySigned }}</label>
+          <label>Maintenir la connection</label>
           <input type="checkbox" v-model="wantToStaySigned" />
         </div>
       </div>
@@ -39,7 +39,8 @@ export default {
         mail: "",
       },
       wantToStaySigned: true,
-      msg: "Bienvenue sur Groupomania, pour continuer connectez ou inscrivez vous !",
+      msg:
+        "Bienvenue sur Groupomania, pour continuer connectez ou inscrivez vous !",
     };
   },
   methods: {
@@ -48,6 +49,7 @@ export default {
         document.getElementById("registerOrLog").innerHTML ==
         `J'ai déjà un compte`
       ) {
+                document.getElementById("sign-btn").textContent  = "Se connecter";
         document.getElementById(
           "registerOrLog"
         ).innerHTML = `Vous n'avez pas de compte ? Créer en un !`;
@@ -60,6 +62,7 @@ export default {
         document.getElementById(
           "registerOrLog"
         ).innerHTML = `J'ai déjà un compte`;
+        document.getElementById("sign-btn").textContent  = "S'inscrire";
         document.getElementById("showMailField").style.display = "inline-block";
         document.getElementById("userOrMail").innerHTML = `Nom d'utilisateur`;
         this.msg = "This is the page to register";

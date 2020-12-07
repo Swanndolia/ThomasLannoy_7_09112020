@@ -3,6 +3,7 @@
     <img class="profile-picture" :src="userImageUrl" :alt="'Photo de profil'" />
     <div>
       <textarea
+        @keyup.enter="createPost"
         v-model="post.content"
         placeholder="Ecrivez le contenu de votre post ici"
       />
@@ -28,7 +29,7 @@ export default {
     return {
       userImageUrl: storage.getStorage("imageUrl"),
       post: {
-        content: null,
+        content: "",
         image: null,
         imageUrl: "",
       },
@@ -37,15 +38,17 @@ export default {
   methods: {
     createPost() {
       const postData = new FormData();
-      if (this.post.content || this.post.image) {
-        postData.append("username", storage.getStorage("username"));
+      if (
+        this.post.content.replaceAll("\n", "").replaceAll(" ", "") != "" ||
+        this.post.image
+      ) {
         postData.append("userId", storage.getStorage("userId"));
-        postData.append("userImageUrl", storage.getStorage("imageUrl"));
         if (this.post.imageUrl != "") {
           postData.append("image", this.post.image);
           postData.append("imageUrl", this.post.image.name);
         }
         postData.append("content", this.post.content);
+        this.post.content = "";
         //we put image and content of post in a FormData and check if it's not empty
         if (this.running == true) {
           return;
@@ -69,8 +72,12 @@ export default {
     },
     onImageChange(e) {
       //event to check for image upload to display preview
-      this.post.image = e.target.files[0];
-      this.post.imageUrl = URL.createObjectURL(this.post.image);
+      if (e.target.files[0].type.includes("image")) {
+        this.post.image = e.target.files[0];
+        this.post.imageUrl = URL.createObjectURL(this.post.image);
+      } else {
+        //tell the user he can't upload this kind of file
+      }
     },
   },
 };
@@ -115,6 +122,7 @@ label {
   border-radius: 50%;
 }
 textarea {
+  background: transparent;
   overflow: hidden;
   outline: none;
   padding: 0px 0px 80px;

@@ -1,10 +1,11 @@
 <template>
   <main>
     <h1>{{ msg }}</h1>
-    <NewPost @new-post-created="getAllPosts"/>
+    <NewPost @new-post-created="getAllPosts" />
     <Post
-      v-for="post in feedPosts.slice().reverse()"
-      :key=" this.feedPosts + ' ' + post.id"
+      @comment-created="getAllPosts"
+      v-for="post in feedPostsLimit"
+      :key="post.id + ' ' + post.comments"
       :post="post"
     />
   </main>
@@ -26,10 +27,16 @@ export default {
   data() {
     return {
       feedPosts: [],
+      feedPostsIndex: 20,
       msg: "Bienvenue sur le fil d'actualité général de Groupomania",
     };
   },
-    watch: {
+  computed: {
+    feedPostsLimit() {
+      return this.feedPosts.slice(0, this.feedPostsIndex);
+    },
+  },
+  watch: {
     "$route.params.id": function () {
       this.getAllPosts();
     },
@@ -67,9 +74,16 @@ export default {
           console.log(error);
         });
     },
+    checkPosition() {
+      if (window.innerHeight + window.scrollY >= document.body.scrollHeight) {
+        // you're at the bottom of the page
+        this.feedPostsIndex += 20;
+      }
+    },
   },
   mounted() {
     this.getAllPosts();
+    window.addEventListener("scroll", this.checkPosition);
   },
 };
 </script>

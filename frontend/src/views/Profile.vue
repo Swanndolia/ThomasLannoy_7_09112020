@@ -2,10 +2,13 @@
   <main>
     <h1>{{ msg }}</h1>
     <UserAbout :key="this.$route.params.id" />
-    <NewPost @new-post-created="getProfilePosts" v-if="this.$route.params.id == this.userId" />
+    <NewPost
+      @new-post-created="getProfilePosts"
+      v-if="this.$route.params.id == this.userId"
+    />
     <Post
-      v-for="post in profilPosts.slice().reverse()"
-      :key="this.$route.params.id + ' ' + post.id"
+      v-for="post in profilePostsLimit"
+      :key="this.$route.params.id + ' ' + post.id + ' ' + post.comments"
       :post="post"
     />
     <router-view />
@@ -30,8 +33,14 @@ export default {
     return {
       msg: "Vous parcourez actuellement le profil de:",
       profilPosts: [],
+      profilPostsIndex: 20,
       userId: storage.getStorage("userId"),
     };
+  },
+  computed: {
+    profilePostsLimit() {
+      return this.profilPosts.slice(0, this.profilPostsIndex);
+    },
   },
   watch: {
     "$route.params.id": function () {
@@ -47,15 +56,40 @@ export default {
           },
         })
         .then((response) => {
+          for (let i = 0; i < response.data.length; i++) {
+            response.data[i].createdAt = response.data[i].createdAt.replace(
+              "T",
+              " à "
+            );
+            response.data[i].createdAt = response.data[i].createdAt.replace(
+              ".000Z",
+              ""
+            );
+            for (let k = 0; k < response.data[i].comments.length; k++) {
+              response.data[i].comments[k].createdAt = response.data[
+                i
+              ].comments[k].createdAt.replace("T", " à ");
+              response.data[i].comments[k].createdAt = response.data[
+                i
+              ].comments[k].createdAt.replace(".000Z", "");
+            }
+          }
           this.profilPosts = response.data;
         })
         .catch((error) => {
           console.log(error);
         });
     },
+    checkPosition() {
+      if (window.innerHeight + window.scrollY >= document.body.scrollHeight) {
+        // you're at the bottom of the page
+        this.profilPostsIndex += 20;
+      }
+    },
   },
   mounted() {
     this.getProfilePosts();
+    window.addEventListener("scroll", this.checkPosition);
   },
 };
 </script>

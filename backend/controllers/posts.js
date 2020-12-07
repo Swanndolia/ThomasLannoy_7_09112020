@@ -31,11 +31,12 @@ exports.getAllPosts = (req, res, next) => {
   db.posts
     .findAll({
       include: [db.users, { model: db.reacts, include: [db.users] }, { model: db.comments, include: [db.users] }],
+      order: [["updatedAt", "DESC"]],
     })
     .then((posts) => {
       for (let i = 0; i < posts.length; i++) {
         posts[i].user.username = secureCrypt(posts[i].user.username);
-        for (let k = 0; k < posts[k].comments.length; k++) {
+        for (let k = 0; k < posts[i].comments.length; k++) {
           if (posts[i].comments[k]) {
             posts[i].comments[k].user.username = secureCrypt(posts[i].comments[k].user.username);
           }
@@ -104,11 +105,12 @@ exports.getAllPostsFromUser = (req, res, next) => {
     .findAll({
       where: { userId: req.params.userId },
       include: [db.users, { model: db.reacts, include: [db.users] }, { model: db.comments, include: [db.users] }],
+      order: [["updatedAt", "DESC"]],
     })
     .then((posts) => {
       for (let i = 0; i < posts.length; i++) {
         posts[i].user.username = secureCrypt(posts[i].user.username);
-        for (let k = 0; k < posts[k].comments.length; k++) {
+        for (let k = 0; k < posts[i].comments.length; k++) {
           if (posts[i].comments[k]) {
             posts[i].comments[k].user.username = secureCrypt(posts[i].comments[k].user.username);
           }
@@ -117,7 +119,7 @@ exports.getAllPostsFromUser = (req, res, next) => {
       res.status(200).json(posts);
     })
     .catch((error) => {
-      console.log(error)
+      console.log(error);
       res.status(400).json({
         error: error,
       });

@@ -140,13 +140,9 @@ a {
   &:not(#logo-link) {
     &:not(.user-link) {
       text-decoration: none;
-      background-color: #eeeeee;
-      color: #333333;
-      padding: 2px 6px 2px 6px;
-      border-top: 1px solid #cccccc;
-      border-right: 1px solid #333333;
-      border-bottom: 1px solid #333333;
-      border-left: 1px solid #cccccc;
+      background-color: black;
+      color: white;
+      padding: 3px 6px;
     }
   }
 }
@@ -174,8 +170,12 @@ nav {
   border-radius: 50%;
 }
 html {
+  background: #23272A;
   font-family: "Roboto", sans-serif;
   font-size: 14px;
+}
+p,h1,figcaption, input, textarea{
+  color: #d2d2d2;
 }
 #searchInput {
   position: relative;

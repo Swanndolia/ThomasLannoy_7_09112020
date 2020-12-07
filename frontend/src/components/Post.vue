@@ -51,10 +51,14 @@
       </p>
       <p @click="showPost">Commenter</p>
     </div>
-    <div class="newcomment" :id="'comments ' + post.id">
-      <NewComment class="new-comment" :postId="post.id.toString()" />
-    </div>
-    <section>
+    <section :id="'commSection ' + post.id">
+      <div class="newcomment" :id="'comments ' + post.id">
+        <NewComment
+          @new-comment-created="refreshComments(post.id)"
+          class="new-comment"
+          :postId="post.id.toString()"
+        />
+      </div>
       <Comment
         v-for="comment in commentsList.slice().reverse()"
         :key="comment.id"
@@ -84,6 +88,9 @@ export default {
     };
   },
   methods: {
+    refreshComments(id) {
+      this.$emit("comment-created", id);
+    },
     showPostMenu() {
       document.getElementById("edit-menu " + this.post.id).style.display =
         "flex";
@@ -232,7 +239,7 @@ export default {
   margin: 60px 0px;
   border: 1px solid;
   border-radius: 20px;
-  background: #f2f2f2;
+  background: #2C2F33;
   overflow: hidden;
   & button {
     padding: 5px;
@@ -243,14 +250,14 @@ export default {
   }
 }
 .chooseReact:hover {
-  background: linear-gradient(to left, #f2ccf2 50%, #ccf2cc 50%);
+  background: linear-gradient(to left, #5c1a1f 50%, #296d29 50%);
   background-size: 200%;
 }
 .reactLike {
-  background: #ccf2cc;
+  background: #296d29;
 }
 .reactDislike {
-  background: #f2ccf2;
+  background: #5c1a1f;
 }
 #info-container {
   display: flex;
@@ -267,17 +274,20 @@ export default {
   border-radius: 50%;
 }
 .likes {
-  background: #ccf2cc;
+  background: #296d29;
 }
 .dislikes {
-  background: #f2ccf2;
+  background: #5c1a1f;
   margin-top: 30px;
 }
 .newcomment {
   display: flex;
   justify-content: space-around;
+  width: 90%;
+  margin: auto;
   display: none;
-  padding: 5px 0px 20px;
+  padding: 5px 0px 15px;
+  border-bottom: 1px solid black;
 }
 input {
   width: 80%;
@@ -291,8 +301,10 @@ input {
   flex-direction: column;
   justify-content: center;
   margin: 30px auto;
-  background: #f2f2f2;
+  background: #2C2F33;
   border-radius: 50px;
+  border-bottom: dashed black 1px;
+  border-top: dashed black 1px;
 }
 .post-user-info {
   display: flex;

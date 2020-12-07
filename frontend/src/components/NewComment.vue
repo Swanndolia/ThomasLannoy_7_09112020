@@ -2,6 +2,7 @@
   <img class="profile-picture" :src="userImageUrl" :alt="'Photo de profil'" />
   <div id="new-comment">
     <textarea
+      @keyup.enter="createComment"
       v-model="comment.content"
       placeholder="Ecrivez le contenu de votre commentaire ici"
     />
@@ -46,16 +47,8 @@ export default {
   methods: {
     createComment() {
       const CommentData = new FormData();
-      const userLikedAndDisliked = [];
-      const likesAndDislikes = 0;
       if (this.comment.content || this.comment.image) {
-        CommentData.append("username", storage.getStorage("username"));
         CommentData.append("userId", storage.getStorage("userId"));
-        CommentData.append("userImageUrl", storage.getStorage("imageUrl"));
-        CommentData.append("usersDisliked", userLikedAndDisliked);
-        CommentData.append("usersLiked", userLikedAndDisliked);
-        CommentData.append("likes", likesAndDislikes);
-        CommentData.append("dislikes", likesAndDislikes);
         if (this.comment.imageUrl != "") {
           CommentData.append("image", this.comment.image);
           CommentData.append("imageUrl", this.comment.image.name);
@@ -68,7 +61,7 @@ export default {
         this.running = true;
         axios
           .post(
-            "http://localhost:3000/api/commentpost/" + this.postId ,
+            "http://localhost:3000/api/commentpost/" + this.postId,
             CommentData,
             {
               // Verif token user in SessionStorage before Commenting
@@ -88,8 +81,12 @@ export default {
     },
     onImageChange(e) {
       //event to check for image upload to display preview
-      this.comment.image = e.target.files[0];
-      this.comment.imageUrl = URL.createObjectURL(this.comment.image);
+      if (e.target.files[0].type.includes("image")) {
+        this.comment.image = e.target.files[0];
+        this.comment.imageUrl = URL.createObjectURL(this.comment.image);
+      } else {
+        //tell the user he can't upload this kind of file
+      }
     },
   },
 };
@@ -104,12 +101,13 @@ export default {
 #new-comment {
   display: flex;
   flex-direction: column;
+  background: lighten(#2c2f33, 5);
   &:hover {
     cursor: pointer;
   }
   border: solid 1px;
   border-radius: 40px;
-  width: 80%;
+  width: 90%;
 }
 #preview {
   display: flex;
@@ -162,6 +160,7 @@ button {
   margin: 10px 10px;
 }
 .profile-picture {
-  margin: 10px 0px 0px 10px;
+  align-self: center;
+  margin: 0px;
 }
 </style>
