@@ -66,7 +66,7 @@ export default {
   methods: {
     deleteUser() {
       let confirm = window.confirm(
-        "Etes vous certain de vouloir supprimer votre compte ? La suppression et permanente et entrainera la suppression de tous vos pots, commentaires et réactions"
+        "Etes vous certain de vouloir supprimer votre compte ? La suppression et permanente et entrainera la suppression de tous vos posts, commentaires et réactions"
       );
       if (confirm) {
         axios
@@ -193,7 +193,7 @@ textarea {
   margin: -10px 5%;
   border: none;
   resize: none;
-  color: #b2b2b2;
+  color: #dcdcdc;
   &:not(:disabled) {
     color: white;
     &:not(:hover) {

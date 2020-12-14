@@ -74,7 +74,7 @@
       >
         Réagir
       </p>
-      <p @click="showPost">Commenter</p>
+      <p @click="showPost">Commenter / Voir les commentaires</p>
     </div>
     <section :id="'commSection ' + post.id">
       <div class="newcomment" :id="'comments ' + post.id">
@@ -125,9 +125,17 @@ export default {
         "none";
     },
     showPost() {
-      this.commentsList = this.post.comments;
-      document.getElementById("comments " + this.post.id).style.display =
-        "flex";
+      if (this.postDetails.commentsVisibile == true) {
+        this.commentsList = [];
+        document.getElementById("comments " + this.post.id).style.display =
+          "none";
+        this.postDetails.commentsVisibile = false;
+      } else {
+        this.commentsList = this.post.comments;
+        document.getElementById("comments " + this.post.id).style.display =
+          "flex";
+        this.postDetails.commentsVisibile = true;
+      }
     },
     deletePost() {
       axios
@@ -459,7 +467,7 @@ figcaption {
   }
 }
 .date {
-  color: #b2b2b2;
+  color: #dcdcdc;
   font-size: 12px;
 }
 .saveEdit {

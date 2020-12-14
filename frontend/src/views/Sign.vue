@@ -175,7 +175,7 @@ form {
   display: flex;
 }
 label {
-  color: #c3c3c3;
+  color: #dcdcdc;
 }
 .form-container {
   display: flex;

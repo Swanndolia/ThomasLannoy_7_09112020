@@ -353,7 +353,7 @@ figcaption {
   }
 }
 .date {
-  color: #b2b2b2;
+  color: #dcdcdc;
   font-size: 12px;
 }
 .saveEdit {
