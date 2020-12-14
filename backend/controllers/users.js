@@ -122,4 +122,20 @@ exports.getAllUsers = (req, res, next) => {
 };
 
 // Delete a db.users with the specified id in the request
-exports.deleteUser = (req, res, next) => {};
+exports.deleteUser = (req, res, next) => {
+  db.users
+    .findOne({
+      where: {
+        id: req.params.id,
+      },
+    })
+    .then((user) => {
+      user.destroy();
+      res.status(200).json(user.id + " has been deleted");
+    })
+    .catch((error) => {
+      res.status(404).json({
+        error: error,
+      });
+    });
+};

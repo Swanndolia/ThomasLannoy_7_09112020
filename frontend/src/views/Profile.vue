@@ -7,6 +7,8 @@
       v-if="this.$route.params.id == this.userId"
     />
     <Post
+      @comment-created="getProfilePosts"
+      @post-modified="getProfilePosts"
       v-for="post in profilePostsLimit"
       :key="this.$route.params.id + ' ' + post.id + ' ' + post.comments"
       :post="post"

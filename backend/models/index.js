@@ -31,12 +31,12 @@ db.reacts = require("./reacts.js")(sequelize, Sequelize);
 db.users.hasMany(db.posts, { foreignKey: "userId" }, { onDelete: "cascade" });
 db.users.hasMany(db.comments, { foreignKey: "userId" }, { onDelete: "cascade" });
 db.users.hasMany(db.reacts, { foreignKey: "userId" }, { onDelete: "cascade" });
-db.reacts.belongsTo(db.users, { foreignKey: "userId" });
-db.reacts.belongsTo(db.posts, { foreignKey: "postId" });
-db.posts.belongsTo(db.users, { foreignKey: "userId" });
 db.posts.hasMany(db.reacts, { foreignKey: "postId" }, { onDelete: "cascade" });
 db.posts.hasMany(db.comments, { foreignKey: "postId" }, { onDelete: "cascade" });
 db.comments.belongsTo(db.users, { foreignKey: "userId" });
 db.comments.belongsTo(db.posts, { foreignKey: "postId" });
+db.reacts.belongsTo(db.users, { foreignKey: "userId" });
+db.reacts.belongsTo(db.posts, { foreignKey: "postId" });
+db.posts.belongsTo(db.users, { foreignKey: "userId" });
 
 module.exports = db;

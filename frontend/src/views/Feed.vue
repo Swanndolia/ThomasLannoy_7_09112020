@@ -4,6 +4,7 @@
     <NewPost @new-post-created="getAllPosts" />
     <Post
       @comment-created="getAllPosts"
+      @post-modified="getAllPosts"
       v-for="post in feedPostsLimit"
       :key="post.id + ' ' + post.comments"
       :post="post"

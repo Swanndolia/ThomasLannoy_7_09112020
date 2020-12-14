@@ -2,6 +2,7 @@ module.exports = (sequelize, Sequelize) => {
   const Reacts = sequelize.define("reacts", {
     userId: {
       type: Sequelize.INTEGER,
+      required: true,
       references: {
         model: "users",
         key: "id",
@@ -9,6 +10,7 @@ module.exports = (sequelize, Sequelize) => {
     },
     postId: {
       type: Sequelize.INTEGER,
+      required: true,
       references: {
         model: "posts",
         key: "id",

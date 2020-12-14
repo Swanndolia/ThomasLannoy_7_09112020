@@ -40,6 +40,7 @@
           disabled
         />
       </p>
+      <button id="delete-btn" @click="deleteUser">Supprimer</button>
     </div>
   </div>
 </template>
@@ -63,12 +64,38 @@ export default {
     };
   },
   methods: {
+    deleteUser() {
+      let confirm = window.confirm(
+        "Etes vous certain de vouloir supprimer votre compte ? La suppression et permanente et entrainera la suppression de tous vos pots, commentaires et réactions"
+      );
+      if (confirm) {
+        axios
+          .delete(
+            "http://localhost:3000/api/users/" + storage.getStorage("userId"),
+            {
+              // Verif token user in SessionStorage before posting
+              headers: {
+                Authorization: "Bearer " + storage.getStorage("token"),
+              },
+            }
+          )
+          .then((response) => {
+            if (response) {
+              localStorage.clear();
+              sessionStorage.clear();
+              window.location.reload();
+            }
+          })
+          .catch((error) => console.log(error));
+      }
+    },
     editMyProfile() {
       this.elements.forEach((el) => el.removeAttribute("disabled"));
       document.getElementById("edit-btn").style.display = "none";
       document.getElementById("save-btn").style.display = "inline-block";
       document.getElementById("editablePicture").classList.add("editimg");
       document.getElementById("info").style.display = "inline-block";
+      document.getElementById("delete-btn").style.display = "inline-block";
     },
     saveMyProfile() {
       this.elements.forEach((el) => el.setAttribute("disabled", true));
@@ -76,6 +103,7 @@ export default {
       document.getElementById("save-btn").style.display = "none";
       document.getElementById("editablePicture").classList.remove("editimg");
       document.getElementById("info").style.display = "none";
+      document.getElementById("delete-btn").style.display = "none";
       const updatedUserData = new FormData();
       if (this.userAbout.image) {
         updatedUserData.append("image", this.userAbout.image);
@@ -132,16 +160,14 @@ export default {
 <style lang="scss" scoped>
 img {
   transition: all 300ms ease-in-out;
-  min-width: 300px;
-  min-height: 200px;
-  max-width: 300px;
-  max-height: 200px;
+  height: 100%;
+  width: 100%;
 }
 #info {
   color: white;
   font-size: 15px;
+  min-width: 200px;
   width: 300px;
-  height: 200px;
   margin-top: 65px;
   display: none;
   position: absolute;
@@ -173,7 +199,7 @@ textarea {
     &:not(:hover) {
       &:not(:focus) {
         transition: all 300ms ease-in-out;
-        filter: blur(3px) brightness(0.5);
+        filter: blur(2px) brightness(0.5);
       }
     }
   }
@@ -183,6 +209,7 @@ textarea {
 }
 button {
   color: black;
+  min-width: 80px;
   width: 10%;
   align-self: flex-end;
   border: 2px solid #23272a;
@@ -193,21 +220,31 @@ button {
     cursor: pointer;
   }
 }
+#delete-btn {
+  display: none;
+  align-self: flex-end;
+}
 #save-btn {
   width: 15%;
   display: none;
 }
 #user-about {
   width: 70%;
-  height: 200px;
   display: flex;
   justify-content: space-between;
   margin: 10px auto;
+  flex-wrap: wrap-reverse;
+}
+#label-container {
+  margin: auto;
+  width: 300px;
+  height: 200px;
 }
 #about {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  flex-grow: 1;
+  min-width: 200px;
   align-self: flex-start;
   margin: 0px 0px;
   background: #2c2f33;

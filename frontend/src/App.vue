@@ -2,8 +2,17 @@
   <header>
     <router-link id="logo-link" to="/">
       <img
+        v-if="largeScreen"
+        :key="largeScreen"
         id="logo"
         src="./assets/img/icon-left-font-monochrome-white.svg"
+        alt="logo-groupomania"
+      />
+      <img
+        v-else
+        :key="largeScreen"
+        id="logo-mobile"
+        src="./assets/img/icon-monochrome-white.svg"
         alt="logo-groupomania"
       />
     </router-link>
@@ -64,6 +73,7 @@ export default {
   },
   data() {
     return {
+      largeScreen: Boolean,
       waitSearch: false,
       allUsers: {},
       matchingUsers: {
@@ -72,7 +82,24 @@ export default {
       myProfileUrl: "/",
     };
   },
+  mounted() {
+    this.checkwidth();
+    window.addEventListener("resize", this.checkwidth);
+  },
   methods: {
+    // Maybe better in css should check
+    checkwidth() {
+      if (window.innerWidth < 1265) {
+        document.getElementById("searchInput").style.width = "130px";
+        if (window.innerWidth <= 1080) {
+          this.largeScreen = false;
+        } else {
+          this.largeScreen = true;
+        }
+      } else {
+        document.getElementById("searchInput").style.width = "260px";
+      }
+    },
     disconnect() {
       localStorage.clear();
       sessionStorage.clear();
@@ -160,6 +187,9 @@ a {
     }
   }
 }
+#logo-link {
+  width: fit-content;
+}
 #notif-btn {
   color: black;
   background: white;
@@ -169,13 +199,17 @@ a {
   outline: transparent;
   cursor: pointer;
   transition: ease-in 0.25s;
-  &:hover {
+  &:focus:hover {
     background: #2c2f33;
     color: white;
   }
 }
 #logo {
-  width: 70%;
+  width: 220px;
+}
+#logo-mobile {
+  margin: -6px;
+  width: 48px;
 }
 header {
   gap: 10px;
@@ -196,8 +230,10 @@ h1 {
 nav {
   gap: 10px;
   display: flex;
+  justify-content: flex-end;
   align-items: center;
   flex-direction: row;
+  flex-wrap: wrap-reverse;
 }
 .profile-picture {
   width: 50px;

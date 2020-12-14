@@ -15,17 +15,17 @@
       <div class="reacts">
         <button
           class="dropdown-button"
-          :id="'edit-btn-comment ' + this.post.id"
-          @click="showPostMenu"
+          :id="'edit-btn-comment ' + this.comment.id"
+          @click="showCommentMenu"
         >
           <p>.</p>
           <p>.</p>
           <p>.</p>
         </button>
         <div :id="'edit-menu-comment ' + this.post.id" class="dropdown-content">
-          <button @click="editPost">Modifier</button>
-          <button @click="deletePost">Supprimer</button>
-          <button id="cancel-btn" @click="hidePostMenu">Annuler</button>
+          <button @click="modifyComment">Modifier</button>
+          <button @click="deleteComment">Supprimer</button>
+          <button id="cancel-btn" @click="hideCommentMenu">Annuler</button>
         </div>
         <span v-if="comment.likes" class="likes">{{ comment.likes }} </span>
         <span v-if="comment.dislikes" class="dislikes">{{
@@ -34,10 +34,21 @@
       </div>
     </figure>
     <div class="comment-content">
-      <p v-if="comment.content != 'null'">{{ comment.content }}</p>
-      <div v-if="comment.imageUrl != null">
-        <img :src="comment.imageUrl" :alt="'Image du commentaire'" />
-      </div>
+      <p :id="this.comment.id + ' content'" v-if="comment.content != 'null'">
+        {{ comment.content }}
+      </p>
+      <img
+        v-if="comment.imageUrl != null"
+        :src="comment.imageUrl"
+        :alt="'Image du commentaire'"
+      />
+      <button
+        @click="sendModifiedComment"
+        class="saveEdit"
+        :id="this.comment.id + ' confirmEdit'"
+      >
+        Enregistrer les modifications
+      </button>
     </div>
     <div id="react">
       <p
@@ -71,13 +82,68 @@ export default {
     },
   },
   methods: {
-    showPostMenu() {
-      document.getElementById("edit-menu-comment " + this.post.id).style.display =
-        "flex";
+    showCommentMenu() {
+      document.getElementById(
+        "edit-menu-comment " + this.post.id
+      ).style.display = "flex";
     },
-    hidePostMenu() {
-      document.getElementById("edit-menu-comment " + this.post.id).style.display =
+    hideCommentMenu() {
+      document.getElementById(
+        "edit-menu-comment " + this.post.id
+      ).style.display = "none";
+    },
+    deleteComment() {
+      axios
+        .delete("http://localhost:3000/api/comments/" + this.comment.id, {
+          // Verif token user in SessionStorage before posting
+          headers: {
+            Authorization: "Bearer " + storage.getStorage("token"),
+          },
+        })
+        .then((response) => {
+          if (response) {
+            document.getElementById(this.comment.id).style.display = "none";
+          }
+        })
+        .catch((error) => console.log(error));
+    },
+    modifyComment() {
+      this.hideCommentMenu();
+      document
+        .getElementById(this.comment.id + " content")
+        .setAttribute("contenteditable", "true");
+      document.getElementById(this.comment.id + " content").focus();
+      document.getElementById(this.comment.id + " confirmEdit").style.display =
+        "inline-block";
+    },
+    sendModifiedComment() {
+      document
+        .getElementById(this.comment.id + " content")
+        .setAttribute("contenteditable", "false");
+      document.getElementById(this.comment.id + " confirmEdit").style.display =
         "none";
+      const updateCommentData = new FormData();
+      updateCommentData.append(
+        "content",
+        document.getElementById(this.comment.id + " content").textContent
+      );
+      axios
+        .put(
+          "http://localhost:3000/api/comments/" + this.comment.id,
+          updateCommentData,
+          {
+            // Verif token user in SessionStorage before posting
+            headers: {
+              Authorization: "Bearer " + storage.getStorage("token"),
+            },
+          }
+        )
+        .then((response) => {
+          if (response) {
+            //not much to do
+          }
+        })
+        .catch((error) => console.log(error));
     },
     addCommentReact(id) {
       const reactData = {
@@ -98,17 +164,10 @@ export default {
       if (this.running == true) {
         return;
       }
-      //this.running = true;
-      console.log(
-        "http://localhost:3000/api/posts/" +
-          this.post.id +
-          "/" +
-          this.comment.id +
-          "/react"
-      );
+      this.running = true;
       axios
         .post(
-          "http://localhost:3000/api/posts/" +
+          "http://localhost:3000/api/comments/" +
             this.post.id +
             "/" +
             this.comment.id +
@@ -156,18 +215,6 @@ export default {
       }
     });
     const elements = document.getElementsByClassName("chooseReact");
-    /*elements.forEach(() => {
-      if (this.comment.reacts.includes(storage.getStorage("userId"))) {
-        document
-          .getElementById("chooseReact" + this.comment.id)
-          .classList.add("reactDislike");
-      }
-      if (this.comment.usersLiked.includes(storage.getStorage("userId"))) {
-        document
-          .getElementById("chooseReact" + this.comment.id)
-          .classList.add("reactLike");
-      }
-    });*/
     elements.forEach((el) =>
       el.addEventListener("mousemove", (e) => {
         event.target.style.backgroundPositionX = -e.offsetX + "px";
@@ -210,7 +257,7 @@ export default {
   margin: 60px 0px;
   border: 1px solid;
   border-radius: 20px;
-  background: #2C2F33;
+  background: #2c2f33;
   overflow: hidden;
   & button {
     padding: 5px;
@@ -253,7 +300,7 @@ export default {
 }
 .newcomment {
   display: flex;
-  background: #2C2F33;
+  background: #2c2f33;
   justify-content: space-around;
   display: none;
   padding: 5px 0px 20px;
@@ -270,7 +317,7 @@ input {
   flex-direction: column;
   justify-content: center;
   margin: 30px auto;
-  background: lighten(#2C2F33, 5);
+  background: lighten(#2c2f33, 5);
   border-radius: 50px;
 }
 .comment-user-info {
@@ -294,12 +341,12 @@ figcaption {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  margin: 10px 100px;
+  margin: 10px 10%;
   border-top: solid 1px;
   & p {
-    width: 48%;
+    width: 40%;
     text-align: center;
-    padding: 15px 0px;
+    padding: 15px 5px;
     border: solid #bbbbbb;
     cursor: pointer;
     border-width: 0px 1px 1px 1px;
@@ -308,5 +355,11 @@ figcaption {
 .date {
   color: #b2b2b2;
   font-size: 12px;
+}
+.saveEdit {
+  width: 100%;
+  display: none;
+  color: black;
+  position: relative;
 }
 </style>

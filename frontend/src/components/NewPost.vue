@@ -49,6 +49,8 @@ export default {
         }
         postData.append("content", this.post.content);
         this.post.content = "";
+        this.post.image = null;
+        this.post.imageUrl = "";
         //we put image and content of post in a FormData and check if it's not empty
         if (this.running == true) {
           return;
@@ -90,7 +92,7 @@ export default {
   justify-content: space-between;
 }
 #new-post {
-  background: #2C2F33;
+  background: #2c2f33;
   display: flex;
   flex-direction: column;
   &:hover {

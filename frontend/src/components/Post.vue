@@ -23,7 +23,7 @@
           <p>.</p>
         </button>
         <div :id="'edit-menu ' + this.post.id" class="dropdown-content">
-          <button @click="editPost">Modifier</button>
+          <button @click="modifyPost">Modifier</button>
           <button @click="deletePost">Supprimer</button>
           <button id="cancel-btn" @click="hidePostMenu">Annuler</button>
         </div>
@@ -36,10 +36,35 @@
       </div>
     </figure>
     <div class="post-content">
-      <p v-if="post.content != 'null'">{{ post.content }}</p>
-      <div v-if="post.imageUrl != null">
-        <img :src="post.imageUrl" :alt="'Image du post'" />
-      </div>
+      <p :id="this.post.id + ' content'" v-if="post.content != 'null'">
+        {{ post.content }}
+      </p>
+      <label
+        ><input
+          @change="onImageChange"
+          class="file-input"
+          :id="this.post.id + 'file-input'"
+          type="file"
+          disabled />
+        <div :id="this.post.id + ' info'" class="info">
+          <p>
+            Cliquez pour modifier<br />
+            la photo de votre post
+          </p>
+        </div>
+        <img
+          v-if="post.imageUrl != null"
+          :id="this.post.id + ' editablePicture'"
+          :src="postDetails.imageUrl"
+          :alt="'Image du post'"
+      /></label>
+      <button
+        @click="sendModifiedPost"
+        class="saveEdit"
+        :id="this.post.id + ' confirmEdit'"
+      >
+        Enregistrer les modifications
+      </button>
     </div>
     <div id="react">
       <p
@@ -103,6 +128,84 @@ export default {
       this.commentsList = this.post.comments;
       document.getElementById("comments " + this.post.id).style.display =
         "flex";
+    },
+    deletePost() {
+      axios
+        .delete("http://localhost:3000/api/posts/" + this.post.id, {
+          // Verif token user in SessionStorage before posting
+          headers: {
+            Authorization: "Bearer " + storage.getStorage("token"),
+          },
+        })
+        .then((response) => {
+          if (response) {
+            document.getElementById(this.post.id).style.display = "none";
+          }
+        })
+        .catch((error) => console.log(error));
+    },
+    onImageChange(e) {
+      //event to check for image upload to display preview
+      this.postDetails.image = e.target.files[0];
+      this.postDetails.imageUrl = URL.createObjectURL(this.postDetails.image);
+    },
+    modifyPost() {
+      this.hidePostMenu();
+      document
+        .getElementById(this.post.id + " content")
+        .setAttribute("contenteditable", "true");
+      document.getElementById(this.post.id + " content").focus();
+      document.getElementById(this.post.id + " confirmEdit").style.display =
+        "inline-block";
+      if (document.getElementById(this.post.id + " editablePicture")) {
+        document
+          .getElementById(this.post.id + " editablePicture")
+          .classList.add("editimg");
+        document.getElementById(this.post.id + " info").style.display =
+          "inline-block";
+      } else {
+        document.getElementById(this.post.id + "file-input").style.display =
+          "inline-block";
+      }
+      document
+        .getElementById(this.post.id + "file-input")
+        .removeAttribute("disabled");
+    },
+    sendModifiedPost() {
+      document.getElementById(this.post.id + "file-input").style.display =
+        "none";
+      document.getElementById(this.post.id + " info").style.display = "none";
+      document
+        .getElementById(this.post.id + "file-input")
+        .setAttribute("disabled", "true");
+      document
+        .getElementById(this.post.id + " editablePicture")
+        .classList.remove("editimg");
+      document
+        .getElementById(this.post.id + " content")
+        .setAttribute("contenteditable", "false");
+      document.getElementById(this.post.id + " confirmEdit").style.display =
+        "none";
+      const updateData = new FormData();
+      updateData.append("image", this.postDetails.image);
+      updateData.append("imageUrl", this.postDetails.image.name);
+      updateData.append(
+        "content",
+        document.getElementById(this.post.id + " content").textContent
+      );
+      axios
+        .put("http://localhost:3000/api/posts/" + this.post.id, updateData, {
+          // Verif token user in SessionStorage before posting
+          headers: {
+            Authorization: "Bearer " + storage.getStorage("token"),
+          },
+        })
+        .then((response) => {
+          if (response) {
+            //not much to do
+          }
+        })
+        .catch((error) => console.log(error));
     },
     addReact(id) {
       const reactData = {
@@ -330,6 +433,7 @@ input {
 .post-content {
   margin: -10px 5%;
   & img {
+    transition: all 300ms ease-in-out;
     width: 100%;
     margin: 10px 0px;
   }
@@ -357,5 +461,28 @@ figcaption {
 .date {
   color: #b2b2b2;
   font-size: 12px;
+}
+.saveEdit {
+  width: 100%;
+  display: none;
+  color: black;
+  position: relative;
+}
+.info {
+  color: white;
+  font-size: 15px;
+  width: 50%;
+  margin: 17.5% 7.5%;
+  display: none;
+  position: absolute;
+  text-align: center;
+  z-index: 1;
+}
+.editimg {
+  transition: all 300ms ease-in-out;
+  filter: blur(3px) brightness(0.5);
+}
+.file-input {
+  display: none;
 }
 </style>

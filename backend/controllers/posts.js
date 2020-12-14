@@ -59,8 +59,44 @@ exports.getAllPosts = (req, res, next) => {
       });
     });
 };
-exports.modifyPost = (req, res, next) => {};
-exports.deletePost = (req, res, next) => {};
+exports.modifyPost = (req, res, next) => {
+  db.posts
+    .findOne({
+      where: {
+        id: req.params.id,
+      },
+    })
+    .then((post) => {
+      post.content = req.body.content;
+      if (req.body.imageUrl) {
+        post.imageUrl = `${req.protocol}://${req.get("host")}/images/${req.body.imageUrl}`;
+      }
+      post.save();
+      res.status(200).json(post.id + " has been modified");
+    })
+    .catch((error) => {
+      res.status(404).json({
+        error: error,
+      });
+    });
+};
+exports.deletePost = (req, res, next) => {
+  db.posts
+    .findOne({
+      where: {
+        id: req.params.id,
+      },
+    })
+    .then((post) => {
+      post.destroy();
+      res.status(200).json(post.id + " has been deleted");
+    })
+    .catch((error) => {
+      res.status(404).json({
+        error: error,
+      });
+    });
+};
 
 exports.react = (req, res, next) => {
   db.reacts
@@ -113,6 +149,14 @@ exports.getAllPostsFromUser = (req, res, next) => {
         for (let k = 0; k < posts[i].comments.length; k++) {
           if (posts[i].comments[k]) {
             posts[i].comments[k].user.username = secureCrypt(posts[i].comments[k].user.username);
+          }
+        }
+        for (let j = 0; j < posts[i].reacts.length; j++) {
+          if (posts[i].reacts[j].react == 1) {
+            posts[i].likes++;
+          }
+          if (posts[i].reacts[j].react == -1) {
+            posts[i].dislikes++;
           }
         }
       }
