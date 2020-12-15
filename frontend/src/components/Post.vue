@@ -80,6 +80,7 @@
       <div class="newcomment" :id="'comments ' + post.id">
         <NewComment
           @new-comment-created="refreshComments(post.id)"
+          @new-reply-created="refreshReplies(comment.id)"
           class="new-comment"
           :postId="post.id.toString()"
         />
@@ -115,6 +116,9 @@ export default {
   methods: {
     refreshComments(id) {
       this.$emit("comment-created", id);
+    },
+    refreshReplies(id) {
+      this.$emit("reply-created", id);
     },
     showPostMenu() {
       document.getElementById("edit-menu " + this.post.id).style.display =

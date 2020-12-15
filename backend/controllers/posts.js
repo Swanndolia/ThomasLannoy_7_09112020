@@ -33,7 +33,7 @@ exports.getAllPosts = (req, res, next) => {
       include: [
         db.users,
         { model: db.reacts, include: [db.users] },
-        { model: db.comments, include: [db.users, { model: db.replies, include: [db.reactsReply] }, db.reactsComment] },
+        { model: db.comments, include: [db.users, { model: db.replies, include: [db.users, db.reactsReply] }, db.reactsComment] },
       ],
       order: [["updatedAt", "DESC"]],
     })
@@ -43,11 +43,24 @@ exports.getAllPosts = (req, res, next) => {
         for (let k = 0; k < posts[i].comments.length; k++) {
           if (posts[i].comments[k]) {
             posts[i].comments[k].user.username = secureCrypt(posts[i].comments[k].user.username);
-            for (let n = 0; n < posts[i].comments[k].reactsComments.length; n++) {
-              if (posts[i].comments[k].reactsComments[n].react == 1) {
+            for (let n = 0; n < posts[i].comments[k].replies.length; n++) {
+              if (posts[i].comments[k].replies[n]) {
+                posts[i].comments[k].replies[n].user.username = secureCrypt(posts[i].comments[k].replies[n].user.username);
+                for (let r = 0; r < posts[i].comments[k].replies[n].reactsReplies.length; r++) {
+                  if (posts[i].comments[k].replies[n].reactsReplies[r].react == 1) {
+                    posts[i].comments[k].replies[n].likes++;
+                  }
+                  if (posts[i].comments[k].replies[n].reactsReplies[r].react == -1) {
+                    posts[i].comments[k].replies[n].dislikes++;
+                  }
+                }
+              }
+            }
+            for (let m = 0; m < posts[i].comments[k].reactsComments.length; m++) {
+              if (posts[i].comments[k].reactsComments[m].react == 1) {
                 posts[i].comments[k].likes++;
               }
-              if (posts[i].comments[k].reactsComments[n].react == -1) {
+              if (posts[i].comments[k].reactsComments[m].react == -1) {
                 posts[i].comments[k].dislikes++;
               }
             }
@@ -155,7 +168,7 @@ exports.getAllPostsFromUser = (req, res, next) => {
       include: [
         db.users,
         { model: db.reacts, include: [db.users] },
-        { model: db.comments, include: [db.users, { model: db.replies, include: [db.reactsReply] }, db.reactsComment] },
+        { model: db.comments, include: [db.users, { model: db.replies, include: [db.users, db.reactsReply] }, db.reactsComment] },
       ],
       order: [["updatedAt", "DESC"]],
     })
@@ -165,11 +178,24 @@ exports.getAllPostsFromUser = (req, res, next) => {
         for (let k = 0; k < posts[i].comments.length; k++) {
           if (posts[i].comments[k]) {
             posts[i].comments[k].user.username = secureCrypt(posts[i].comments[k].user.username);
-            for (let n = 0; n < posts[i].comments[k].reactsComments.length; n++) {
-              if (posts[i].comments[k].reactsComments[n].react == 1) {
+            for (let n = 0; n < posts[i].comments[k].replies.length; n++) {
+              if (posts[i].comments[k].replies[n]) {
+                posts[i].comments[k].replies[n].user.username = secureCrypt(posts[i].comments[k].replies[n].user.username);
+                for (let r = 0; r < posts[i].comments[k].replies[n].reactsReplies.length; r++) {
+                  if (posts[i].comments[k].replies[n].reactsReplies[r].react == 1) {
+                    posts[i].comments[k].replies[n].likes++;
+                  }
+                  if (posts[i].comments[k].replies[n].reactsReplies[r].react == -1) {
+                    posts[i].comments[k].replies[n].dislikes++;
+                  }
+                }
+              }
+            }
+            for (let m = 0; m < posts[i].comments[k].reactsComments.length; m++) {
+              if (posts[i].comments[k].reactsComments[m].react == 1) {
                 posts[i].comments[k].likes++;
               }
-              if (posts[i].comments[k].reactsComments[n].react == -1) {
+              if (posts[i].comments[k].reactsComments[m].react == -1) {
                 posts[i].comments[k].dislikes++;
               }
             }

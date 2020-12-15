@@ -7,6 +7,7 @@
       v-if="this.$route.params.id == this.userId"
     />
     <Post
+      @reply-created="getProfilePosts"
       @comment-created="getProfilePosts"
       @post-modified="getProfilePosts"
       v-for="post in profilePostsLimit"
@@ -74,6 +75,22 @@ export default {
               response.data[i].comments[k].createdAt = response.data[
                 i
               ].comments[k].createdAt.replace(".000Z", "");
+              for (
+                let j = 0;
+                j < response.data[i].comments[k].replies.length;
+                j++
+              ) {
+                response.data[i].comments[k].replies[
+                  j
+                ].createdAt = response.data[i].comments[k].replies[
+                  j
+                ].createdAt.replace("T", " à ");
+                response.data[i].comments[k].replies[
+                  j
+                ].createdAt = response.data[i].comments[k].replies[
+                  j
+                ].createdAt.replace(".000Z", "");
+              }
             }
           }
           this.profilPosts = response.data;

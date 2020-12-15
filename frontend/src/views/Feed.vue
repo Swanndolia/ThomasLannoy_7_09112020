@@ -3,6 +3,7 @@
     <h1>{{ msg }}</h1>
     <NewPost @new-post-created="getAllPosts" />
     <Post
+      @reply-created="getAllPosts"
       @comment-created="getAllPosts"
       @post-modified="getAllPosts"
       v-for="post in feedPostsLimit"
@@ -67,6 +68,22 @@ export default {
               response.data[i].comments[k].createdAt = response.data[
                 i
               ].comments[k].createdAt.replace(".000Z", "");
+              for (
+                let j = 0;
+                j < response.data[i].comments[k].replies.length;
+                j++
+              ) {
+                response.data[i].comments[k].replies[
+                  j
+                ].createdAt = response.data[i].comments[k].replies[
+                  j
+                ].createdAt.replace("T", " à ");
+                response.data[i].comments[k].replies[
+                  j
+                ].createdAt = response.data[i].comments[k].replies[
+                  j
+                ].createdAt.replace(".000Z", "");
+              }
             }
           }
           this.feedPosts = response.data;

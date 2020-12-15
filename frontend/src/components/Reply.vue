@@ -1,105 +1,81 @@
 <template>
-  <div class="comment" :id="comment.id">
-    <figure class="comment-user-info">
+  <div class="reply" :id="reply.id">
+    <figure class="reply-user-info">
       <div id="info-container">
         <img
           class="profile-picture"
-          :src="comment.user.imageUrl"
-          :alt="'Photo de profil de ' + comment.user.username"
+          :src="reply.user.imageUrl"
+          :alt="'Photo de profil de ' + reply.user.username"
         />
         <figcaption>
-          {{ comment.user.username }}<br />
-          <span class="date">{{ comment.createdAt }}</span>
+          {{ reply.user.username }}<br />
+          <span class="date">{{ reply.createdAt }}</span>
         </figcaption>
       </div>
       <div class="reacts">
         <button
           class="dropdown-button"
-          :id="'edit-btn-comment ' + this.comment.id"
-          @click="showCommentMenu"
+          :id="'edit-btn-reply ' + this.reply.id"
+          @click="showReplyMenu"
         >
           <p>.</p>
           <p>.</p>
           <p>.</p>
         </button>
-        <div :id="'edit-menu-comment ' + this.post.id" class="dropdown-content">
-          <button @click="modifyComment">Modifier</button>
-          <button @click="deleteComment">Supprimer</button>
-          <button id="cancel-btn" @click="hideCommentMenu">Annuler</button>
+        <div :id="'edit-menu-reply ' + this.post.id" class="dropdown-content">
+          <button @click="modifyReply">Modifier</button>
+          <button @click="deleteReply">Supprimer</button>
+          <button id="cancel-btn" @click="hideReplyMenu">Annuler</button>
         </div>
-        <span :key="commentDetails.likes" class="likes"
-          >{{ commentDetails.likes }}
+        <span :key="replyDetails.likes" class="likes"
+          >{{ replyDetails.likes }}
         </span>
-        <span :key="commentDetails.dislikes" class="dislikes">{{
-          commentDetails.dislikes
+        <span :key="replyDetails.dislikes" class="dislikes">{{
+          replyDetails.dislikes
         }}</span>
       </div>
     </figure>
-    <div class="comment-content">
-      <p :id="this.comment.id + ' content'" v-if="comment.content != 'null'">
-        {{ comment.content }}
+    <div class="reply-content">
+      <p :id="this.reply.id + ' content'" v-if="reply.content != 'null'">
+        {{ reply.content }}
       </p>
       <img
-        v-if="comment.imageUrl != null"
-        :src="comment.imageUrl"
-        :alt="'Image du commentaire'"
+        v-if="reply.imageUrl != null"
+        :src="reply.imageUrl"
+        :alt="'Image du replyaire'"
       />
       <button
-        @click="sendModifiedComment"
+        @click="sendModifiedReply"
         class="saveEdit"
-        :id="this.comment.id + ' confirmEdit'"
+        :id="this.reply.id + ' confirmEdit'"
       >
         Enregistrer les modifications
       </button>
     </div>
     <div id="react">
       <p
-        @click="addCommentReact('chooseReactComment' + comment.id)"
-        class="chooseReactComment"
-        :id="'chooseReactComment' + comment.id"
+        @click="addReplyReact('chooseReactReply' + reply.id)"
+        class="chooseReactReply"
+        :id="'chooseReactReply' + reply.id"
       >
         Réagir
       </p>
-      <p @click="reply">Répondre</p>
     </div>
-    <section :id="'replySection ' + comment.id">
-      <div class="newreply" :id="'replies ' + comment.id">
-        <NewReply
-          @new-reply-created="refreshReplies(comment.id)"
-          class="new-reply"
-          :commentId="comment.id.toString()"
-        />
-      </div>
-      <Reply
-        v-for="reply in repliesList.slice().reverse()"
-        :key="reply.id"
-        :reply="reply"
-        :post="post"
-      />
-    </section>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import * as storage from "../modules/storage";
-import Reply from "../components/Reply.vue";
-import NewReply from "../components/NewReply.vue";
-
 export default {
-  name: "Comment",
-  components: {
-    Reply,
-    NewReply,
-  },
+  name: "Reply",
   data() {
     return {
-      commentDetails: this.comment,
-      repliesList: [],
+      replyDetails: this.reply,
     };
   },
   props: {
-    comment: {
+    reply: {
       type: Object,
       required: true,
     },
@@ -109,35 +85,17 @@ export default {
     },
   },
   methods: {
-    reply() {
-      if (this.commentDetails.replyVisibile == true) {
-        this.repliesList = [];
-        document.getElementById("replies " + this.comment.id).style.display =
-          "none";
-        this.commentDetails.replyVisibile = false;
-      } else {
-        this.repliesList = this.comment.replies;
-        document.getElementById("replies " + this.comment.id).style.display =
-          "flex";
-        this.commentDetails.replyVisibile = true;
-      }
+    showReplyMenu() {
+      document.getElementById("edit-menu-reply " + this.post.id).style.display =
+        "flex";
     },
-    refreshReplies(id) {
-      this.$emit("new-reply-created", id);
+    hideReplyMenu() {
+      document.getElementById("edit-menu-reply " + this.post.id).style.display =
+        "none";
     },
-    showCommentMenu() {
-      document.getElementById(
-        "edit-menu-comment " + this.post.id
-      ).style.display = "flex";
-    },
-    hideCommentMenu() {
-      document.getElementById(
-        "edit-menu-comment " + this.post.id
-      ).style.display = "none";
-    },
-    deleteComment() {
+    deleteReply() {
       axios
-        .delete("http://localhost:3000/api/comments/" + this.comment.id, {
+        .delete("http://localhost:3000/api/replies/" + this.reply.id, {
           // Verif token user in SessionStorage before posting
           headers: {
             Authorization: "Bearer " + storage.getStorage("token"),
@@ -145,35 +103,35 @@ export default {
         })
         .then((response) => {
           if (response) {
-            document.getElementById(this.comment.id).style.display = "none";
+            document.getElementById(this.reply.id).style.display = "none";
           }
         })
         .catch((error) => console.log(error));
     },
-    modifyComment() {
-      this.hideCommentMenu();
+    modifyReply() {
+      this.hideReplyMenu();
       document
-        .getElementById(this.comment.id + " content")
+        .getElementById(this.reply.id + " content")
         .setAttribute("contenteditable", "true");
-      document.getElementById(this.comment.id + " content").focus();
-      document.getElementById(this.comment.id + " confirmEdit").style.display =
+      document.getElementById(this.reply.id + " content").focus();
+      document.getElementById(this.reply.id + " confirmEdit").style.display =
         "inline-block";
     },
-    sendModifiedComment() {
+    sendModifiedReply() {
       document
-        .getElementById(this.comment.id + " content")
+        .getElementById(this.reply.id + " content")
         .setAttribute("contenteditable", "false");
-      document.getElementById(this.comment.id + " confirmEdit").style.display =
+      document.getElementById(this.reply.id + " confirmEdit").style.display =
         "none";
-      const updateCommentData = new FormData();
-      updateCommentData.append(
+      const updateReplyData = new FormData();
+      updateReplyData.append(
         "content",
-        document.getElementById(this.comment.id + " content").textContent
+        document.getElementById(this.reply.id + " content").textContent
       );
       axios
         .put(
-          "http://localhost:3000/api/comments/" + this.comment.id,
-          updateCommentData,
+          "http://localhost:3000/api/replies/" + this.reply.id,
+          updateReplyData,
           {
             // Verif token user in SessionStorage before posting
             headers: {
@@ -188,7 +146,7 @@ export default {
         })
         .catch((error) => console.log(error));
     },
-    addCommentReact(id) {
+    addReplyReact(id) {
       const reactData = {
         react: "",
         userId: storage.getStorage("userId"),
@@ -210,7 +168,7 @@ export default {
       this.running = true;
       axios
         .post(
-          "http://localhost:3000/api/comments/" + this.comment.id + "/react",
+          "http://localhost:3000/api/replies/" + this.reply.id + "/react",
           reactData,
           {
             // Verif token user in SessionStorage before posting
@@ -223,33 +181,33 @@ export default {
           if (response) {
             if (response.data.react == -1) {
               if (document.getElementById(id).classList.contains("reactLike")) {
-                this.commentDetails.likes--;
+                this.replyDetails.likes--;
               }
               document
                 .getElementById(id)
-                .classList.remove("reactLike", "chooseReactComment");
+                .classList.remove("reactLike", "chooseReactReply");
               document.getElementById(id).classList.add("reactDislike");
-              this.commentDetails.dislikes++;
+              this.replyDetails.dislikes++;
             }
             if (response.data.react == 1) {
               if (
                 document.getElementById(id).classList.contains("reactDislike")
               ) {
-                this.commentDetails.dislikes--;
+                this.replyDetails.dislikes--;
               }
               document
                 .getElementById(id)
-                .classList.remove("reactDislike", "chooseReactComment");
+                .classList.remove("reactDislike", "chooseReactReply");
               document.getElementById(id).classList.add("reactLike");
-              this.commentDetails.likes++;
+              this.replyDetails.likes++;
             }
             if (response.data.message.includes("supprimée")) {
               if (
                 document.getElementById(id).classList.contains("reactDislike")
               ) {
-                this.commentDetails.dislikes--;
+                this.replyDetails.dislikes--;
               } else {
-                this.commentDetails.likes--;
+                this.replyDetails.likes--;
               }
               document
                 .getElementById(id)
@@ -262,29 +220,29 @@ export default {
     },
   },
   mounted() {
-    const comments = document.getElementsByClassName("post");
-    comments.forEach(() => {
-      if (storage.getStorage("userId") != this.comment.userId) {
+    const replies = document.getElementsByClassName("post");
+    replies.forEach(() => {
+      if (storage.getStorage("userId") != this.reply.userId) {
         document.getElementById(
-          "edit-btn-comment " + this.comment.id
+          "edit-btn-reply " + this.reply.id
         ).style.visibility = "hidden";
       }
     });
-    const elements = document.getElementsByClassName("chooseReactComment");
+    const elements = document.getElementsByClassName("chooseReactReply");
     elements.forEach((el) =>
       el.addEventListener("mousemove", (e) => {
         event.target.style.backgroundPositionX = -e.offsetX + "px";
-        event.target.classList.add("chooseReactComment");
+        event.target.classList.add("chooseReactReply");
       })
     );
-    const reacts = this.comment.reactsComments;
+    const reacts = this.reply.reactsReplies;
     for (let i = 0; i < reacts.length; i++) {
       if (
         reacts[i].react == -1 &&
         reacts[i].userId.toString().includes(storage.getStorage("userId"))
       ) {
         document
-          .getElementById("chooseReactComment" + this.comment.id)
+          .getElementById("chooseReactReply" + this.reply.id)
           .classList.add("reactDislike");
       }
       if (
@@ -292,7 +250,7 @@ export default {
         reacts[i].userId.toString().includes(storage.getStorage("userId"))
       ) {
         document
-          .getElementById("chooseReactComment" + this.comment.id)
+          .getElementById("chooseReactReply" + this.reply.id)
           .classList.add("reactLike");
       }
     }
@@ -342,7 +300,7 @@ export default {
     border-bottom: dashed 1px;
   }
 }
-.chooseReactComment:hover {
+.chooseReactReply:hover {
   background: linear-gradient(to left, #5c1f24 50%, #2f6d2f 50%);
   background-size: 200%;
 }
@@ -374,7 +332,11 @@ export default {
   margin-top: 30px;
 }
 .newreply {
+  display: flex;
+  background: #2c2f33;
+  justify-content: space-around;
   display: none;
+  padding: 5px 0px 20px;
 }
 input {
   width: 80%;
@@ -382,22 +344,22 @@ input {
   padding: 10px;
   outline: none;
 }
-.comment {
+.reply {
   width: 90%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   margin: 30px auto;
-  background: lighten(#2c2f33, 5);
+  background: darken(#2c2f33, 5);
   border-radius: 50px;
 }
-.comment-user-info {
+.reply-user-info {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   margin: 10px 20px;
 }
-.comment-content {
+.reply-content {
   margin: -10px 50px;
   & img {
     width: 100%;
@@ -415,12 +377,13 @@ figcaption {
   margin: 10px 10%;
   border-top: solid 1px;
   & p {
-    width: 40%;
+    width: 90%;
     text-align: center;
     padding: 15px 5px;
-    border: solid #bbbbbb;
+    border: dashed #bbbbbb;
     cursor: pointer;
-    border-width: 0px 1px 1px 1px;
+    border-radius: 50px;
+    border-width: 0px 1px 0px 1px;
   }
 }
 .date {

@@ -13,7 +13,6 @@ exports.replyComment = (req, res, next) => {
 };
 
 exports.reactToReply = (req, res, next) => {
-  console.log(req.body);
   db.reactsReply
     .findOne({
       where: {

@@ -13,7 +13,6 @@ exports.commentPost = (req, res, next) => {
 };
 
 exports.reactToComment = (req, res, next) => {
-  console.log(req.body)
   db.reactsComment
     .findOne({
       where: {
