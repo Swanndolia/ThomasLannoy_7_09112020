@@ -27,9 +27,9 @@
           <button @click="deleteComment">Supprimer</button>
           <button id="cancel-btn" @click="hideCommentMenu">Annuler</button>
         </div>
-        <span v-if="comment.likes" class="likes">{{ comment.likes }} </span>
-        <span v-if="comment.dislikes" class="dislikes">{{
-          comment.dislikes
+        <span :key="commentDetails.likes" class="likes">{{ commentDetails.likes }} </span>
+        <span :key="commentDetails.dislikes" class="dislikes">{{
+          commentDetails.dislikes
         }}</span>
       </div>
     </figure>
@@ -52,9 +52,9 @@
     </div>
     <div id="react">
       <p
-        @click="addCommentReact('chooseReact' + comment.id)"
-        class="chooseReact"
-        :id="'chooseReact' + comment.id"
+        @click="addCommentReact('chooseReactComment' + comment.id)"
+        class="chooseReactComment"
+        :id="'chooseReactComment' + comment.id"
       >
         Réagir
       </p>
@@ -69,7 +69,9 @@ import * as storage from "../modules/storage";
 export default {
   name: "Comment",
   data() {
-    return {};
+    return {
+      commentDetails: this.comment,
+    };
   },
   props: {
     comment: {
@@ -147,7 +149,7 @@ export default {
     },
     addCommentReact(id) {
       const reactData = {
-        like: "",
+        react: "",
         userId: storage.getStorage("userId"),
       };
       if (
@@ -157,9 +159,9 @@ export default {
             document.getElementById(id).offsetWidth
         ) == 1
       ) {
-        reactData.like = -1;
+        reactData.react = -1;
       } else {
-        reactData.like = 1;
+        reactData.react = 1;
       }
       if (this.running == true) {
         return;
@@ -167,11 +169,7 @@ export default {
       this.running = true;
       axios
         .post(
-          "http://localhost:3000/api/comments/" +
-            this.post.id +
-            "/" +
-            this.comment.id +
-            "/react",
+          "http://localhost:3000/api/comments/" + this.comment.id + "/react",
           reactData,
           {
             // Verif token user in SessionStorage before posting
@@ -182,19 +180,36 @@ export default {
         )
         .then((response) => {
           if (response) {
-            if (response.data.message.includes("Dislike ajouté")) {
+            if (response.data.react == -1) {
+              if (document.getElementById(id).classList.contains("reactLike")) {
+                this.commentDetails.likes--;
+              }
               document
                 .getElementById(id)
-                .classList.remove("reactLike", "chooseReact");
+                .classList.remove("reactLike", "chooseReactComment");
               document.getElementById(id).classList.add("reactDislike");
+              this.commentDetails.dislikes++;
             }
-            if (response.data.message.includes("Like ajouté")) {
+            if (response.data.react == 1) {
+              if (
+                document.getElementById(id).classList.contains("reactDislike")
+              ) {
+                this.commentDetails.dislikes--;
+              }
               document
                 .getElementById(id)
-                .classList.remove("reactDislike", "chooseReact");
+                .classList.remove("reactDislike", "chooseReactComment");
               document.getElementById(id).classList.add("reactLike");
+              this.commentDetails.likes++;
             }
-            if (response.data.message.includes("retiré")) {
+            if (response.data.message.includes("supprimée")) {
+              if (
+                document.getElementById(id).classList.contains("reactDislike")
+              ) {
+                this.commentDetails.dislikes--;
+              } else {
+                this.commentDetails.likes--;
+              }
               document
                 .getElementById(id)
                 .classList.remove("reactLike", "reactDislike");
@@ -214,11 +229,11 @@ export default {
         ).style.visibility = "hidden";
       }
     });
-    const elements = document.getElementsByClassName("chooseReact");
+    const elements = document.getElementsByClassName("chooseReactComment");
     elements.forEach((el) =>
       el.addEventListener("mousemove", (e) => {
         event.target.style.backgroundPositionX = -e.offsetX + "px";
-        event.target.classList.add("chooseReact");
+        event.target.classList.add("chooseReactComment");
       })
     );
   },
@@ -267,7 +282,7 @@ export default {
     border-bottom: dashed 1px;
   }
 }
-.chooseReact:hover {
+.chooseReactComment:hover {
   background: linear-gradient(to left, #5c1f24 50%, #2f6d2f 50%);
   background-size: 200%;
 }

@@ -2,7 +2,6 @@ const db = require("../models");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
-// Create and Save a new db.users
 exports.signup = (req, res, next) => {
   mailBody = req.body.mail.split("@");
   bcrypt
@@ -121,7 +120,6 @@ exports.getAllUsers = (req, res, next) => {
     });
 };
 
-// Delete a db.users with the specified id in the request
 exports.deleteUser = (req, res, next) => {
   db.users
     .findOne({

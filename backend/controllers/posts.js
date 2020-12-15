@@ -30,7 +30,11 @@ exports.getOnePost = (req, res, next) => {
 exports.getAllPosts = (req, res, next) => {
   db.posts
     .findAll({
-      include: [db.users, { model: db.reacts, include: [db.users] }, { model: db.comments, include: [db.users] }],
+      include: [
+        db.users,
+        { model: db.reacts, include: [db.users] },
+        { model: db.comments, include: [db.users, { model: db.replies, include: [db.reactsReply] }, db.reactsComment] },
+      ],
       order: [["updatedAt", "DESC"]],
     })
     .then((posts) => {
@@ -39,6 +43,14 @@ exports.getAllPosts = (req, res, next) => {
         for (let k = 0; k < posts[i].comments.length; k++) {
           if (posts[i].comments[k]) {
             posts[i].comments[k].user.username = secureCrypt(posts[i].comments[k].user.username);
+            for (let n = 0; n < posts[i].comments[k].reactsComments.length; n++) {
+              if (posts[i].comments[k].reactsComments[n].react == 1) {
+                posts[i].comments[k].likes++;
+              }
+              if (posts[i].comments[k].reactsComments[n].react == -1) {
+                posts[i].comments[k].dislikes++;
+              }
+            }
           }
         }
         for (let j = 0; j < posts[i].reacts.length; j++) {
@@ -140,7 +152,11 @@ exports.getAllPostsFromUser = (req, res, next) => {
   db.posts
     .findAll({
       where: { userId: req.params.userId },
-      include: [db.users, { model: db.reacts, include: [db.users] }, { model: db.comments, include: [db.users] }],
+      include: [
+        db.users,
+        { model: db.reacts, include: [db.users] },
+        { model: db.comments, include: [db.users, { model: db.replies, include: [db.reactsReply] }, db.reactsComment] },
+      ],
       order: [["updatedAt", "DESC"]],
     })
     .then((posts) => {
@@ -149,6 +165,14 @@ exports.getAllPostsFromUser = (req, res, next) => {
         for (let k = 0; k < posts[i].comments.length; k++) {
           if (posts[i].comments[k]) {
             posts[i].comments[k].user.username = secureCrypt(posts[i].comments[k].user.username);
+            for (let n = 0; n < posts[i].comments[k].reactsComments.length; n++) {
+              if (posts[i].comments[k].reactsComments[n].react == 1) {
+                posts[i].comments[k].likes++;
+              }
+              if (posts[i].comments[k].reactsComments[n].react == -1) {
+                posts[i].comments[k].dislikes++;
+              }
+            }
           }
         }
         for (let j = 0; j < posts[i].reacts.length; j++) {

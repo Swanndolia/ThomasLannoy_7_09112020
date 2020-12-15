@@ -8,7 +8,7 @@ const commentsCtrl = require("../controllers/comments.js");
 
 router.post("/:id", auth, multer, commentsCtrl.commentPost);
 
-router.post("/:id/:commentId/react", auth, commentsCtrl.reactToComment);
+router.post("/:commentId/react", commentsCtrl.reactToComment);
 
 router.delete("/:commentId", auth, commentsCtrl.deleteComment);
 

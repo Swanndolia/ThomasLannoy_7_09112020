@@ -6,6 +6,7 @@ const db = require("./models/index");
 const postsRoutes = require("./routes/posts");
 const usersRoutes = require("./routes/users");
 const commentsRoutes = require("./routes/comments");
+const repliesRoutes= require("./routes/replies");
 const path = require("path");
 require("./middleware/secure-crypt.js")();
 
@@ -39,5 +40,6 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 app.use("/api/posts", postsRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/comments", commentsRoutes);
+app.use("/api/replies", repliesRoutes);
 
 module.exports = app;

@@ -74,7 +74,7 @@
       >
         Réagir
       </p>
-      <p @click="showPost">Commenter / Voir les commentaires</p>
+      <p @click="showPost">Commenter / Voir les comments</p>
     </div>
     <section :id="'commSection ' + post.id">
       <div class="newcomment" :id="'comments ' + post.id">
@@ -451,6 +451,7 @@ figcaption {
   margin: 5px;
 }
 #react {
+  align-items: center;
   display: flex;
   flex-direction: row;
   justify-content: space-around;

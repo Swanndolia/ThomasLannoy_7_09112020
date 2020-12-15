@@ -1,39 +1,39 @@
 const db = require("../models");
 
-exports.commentPost = (req, res, next) => {
+exports.replyComment = (req, res, next) => {
   if (req.body.imageUrl) {
     req.body.imageUrl = `${req.protocol}://${req.get("host")}/images/${req.body.imageUrl}`;
   }
-  db.comments
-    .create({ content: req.body.content, imageUrl: req.body.imageUrl, userId: req.body.userId, postId: req.params.id })
-    .then(() => res.status(201).json({ message: "Vous avez commenté ce post" }))
+  db.replies
+    .create({ content: req.body.content, imageUrl: req.body.imageUrl, userId: req.body.userId, commentId: req.params.id })
+    .then(() => res.status(201).json({ message: "Vous avez replyé ce comment" }))
     .catch((error) => {
       res.status(400).json({ error: error });
     });
 };
 
-exports.reactToComment = (req, res, next) => {
-  console.log(req.body)
-  db.reactsComment
+exports.reactToReply = (req, res, next) => {
+  console.log(req.body);
+  db.reactsReply
     .findOne({
       where: {
-        commentId: req.params.commentId,
+        replyId: req.params.replyId,
         userId: req.body.userId,
       },
     })
     .then((react) => {
       if (react != null) {
         if (react.react == req.body.react) {
-          db.reactsComment
-            .destroy({ where: { commentId: req.params.commentId, userId: req.body.userId } })
+          db.reactsReply
+            .destroy({ where: { replyId: req.params.replyId, userId: req.body.userId } })
             .then(() => res.status(201).json({ message: "reaction supprimée avec succès ! " }))
             .catch((error) => {
               console.log(error);
               res.status(400).json({ error: error });
             });
         } else {
-          db.reactsComment
-            .update({ react: req.body.react }, { where: { commentId: req.params.commentId, userId: req.body.userId } })
+          db.reactsReply
+            .update({ react: req.body.react }, { where: { replyId: req.params.replyId, userId: req.body.userId } })
             .then(() => res.status(201).json({ message: "reaction modifiée avec succès ! ", react: req.body.react }))
             .catch((error) => {
               console.log(error);
@@ -41,8 +41,8 @@ exports.reactToComment = (req, res, next) => {
             });
         }
       } else {
-        db.reactsComment
-          .create({ commentId: req.params.commentId, react: req.body.react, userId: req.body.userId })
+        db.reactsReply
+          .create({ replyId: req.params.replyId, react: req.body.react, userId: req.body.userId })
           .then(() => res.status(201).json({ message: "reaction ajoutée avec succès !", react: req.body.react }))
           .catch((error) => {
             res.status(400).json({ error: error });
@@ -51,20 +51,20 @@ exports.reactToComment = (req, res, next) => {
     });
 };
 
-exports.modifyComment = (req, res, next) => {
-  db.comments
+exports.modifyReply = (req, res, next) => {
+  db.replies
     .findOne({
       where: {
-        id: req.params.commentId,
+        id: req.params.replyId,
       },
     })
-    .then((comment) => {
-      comment.content = req.body.content;
+    .then((reply) => {
+      reply.content = req.body.content;
       if (req.body.imageUrl) {
-        comment.imageUrl = `${req.protocol}://${req.get("host")}/images/${req.body.imageUrl}`;
+        reply.imageUrl = `${req.protocol}://${req.get("host")}/images/${req.body.imageUrl}`;
       }
-      comment.save();
-      res.status(200).json(comment.id + " has been modified");
+      reply.save();
+      res.status(200).json(reply.id + " has been modified");
     })
     .catch((error) => {
       res.status(404).json({
@@ -73,16 +73,16 @@ exports.modifyComment = (req, res, next) => {
     });
 };
 
-exports.deleteComment = (req, res, next) => {
-  db.comments
+exports.deleteReply = (req, res, next) => {
+  db.replies
     .findOne({
       where: {
-        id: req.params.commentId,
+        id: req.params.replyId,
       },
     })
-    .then((comment) => {
-      comment.destroy();
-      res.status(200).json(comment.id + " has been deleted");
+    .then((reply) => {
+      reply.destroy();
+      res.status(200).json(reply.id + " has been deleted");
     })
     .catch((error) => {
       res.status(404).json({

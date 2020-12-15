@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  const Comments = sequelize.define("comments", {
+  const ReactsComment = sequelize.define("reactsComment", {
     userId: {
       type: Sequelize.INTEGER,
       required: true,
@@ -8,28 +8,17 @@ module.exports = (sequelize, Sequelize) => {
         key: "id",
       },
     },
-    postId: {
+    commentId: {
       type: Sequelize.INTEGER,
       required: true,
       references: {
-        model: "posts",
+        model: "comments",
         key: "id",
       },
     },
-    content: {
-      type: Sequelize.TEXT,
-    },
-    imageUrl: {
-      type: Sequelize.STRING,
-    },
-    likes: {
+    react: {
       type: Sequelize.INTEGER,
-      defaultValue: 0,
-    },
-    dislikes: {
-      type: Sequelize.INTEGER,
-      defaultValue: 0,
     },
   });
-  return Comments;
+  return ReactsComment;
 };

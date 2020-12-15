@@ -91,13 +91,13 @@ export default {
     checkwidth() {
       if (window.innerWidth < 1265) {
         document.getElementById("searchInput").style.width = "130px";
-        if (window.innerWidth <= 1080) {
-          this.largeScreen = false;
-        } else {
-          this.largeScreen = true;
-        }
       } else {
         document.getElementById("searchInput").style.width = "260px";
+      }
+      if (window.innerWidth <= 1080) {
+        this.largeScreen = false;
+      } else {
+        this.largeScreen = true;
       }
     },
     disconnect() {
@@ -253,7 +253,8 @@ h1,
 figcaption,
 input,
 textarea,
-button, span {
+button,
+span {
   color: #dcdcdc;
 }
 #searchInput {
