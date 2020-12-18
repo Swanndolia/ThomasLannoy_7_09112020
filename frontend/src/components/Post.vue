@@ -36,7 +36,7 @@
       </div>
     </figure>
     <div class="post-content">
-      <p :id="this.post.id + ' content'" v-if="post.content != 'null'">
+      <p :id="this.post.id + ' content'">
         {{ post.content }}
       </p>
       <label
@@ -74,18 +74,18 @@
       >
         Réagir
       </p>
-      <p @click="showPost">Commenter / Voir les comments</p>
+      <p @click="showPost">Commenter</p>
     </div>
     <section :id="'commSection ' + post.id">
       <div class="newcomment" :id="'comments ' + post.id">
         <NewComment
           @new-comment-created="refreshComments(post.id)"
-          @new-reply-created="refreshReplies(comment.id)"
           class="new-comment"
           :postId="post.id.toString()"
         />
       </div>
       <Comment
+        @new-reply-created="refreshReplies(comment.id)"
         v-for="comment in commentsList.slice().reverse()"
         :key="comment.id"
         :comment="comment"
@@ -118,6 +118,7 @@ export default {
       this.$emit("comment-created", id);
     },
     refreshReplies(id) {
+      console.log(id);
       this.$emit("reply-created", id);
     },
     showPostMenu() {
@@ -157,9 +158,11 @@ export default {
         .catch((error) => console.log(error));
     },
     onImageChange(e) {
-      //event to check for image upload to display preview
-      this.postDetails.image = e.target.files[0];
-      this.postDetails.imageUrl = URL.createObjectURL(this.postDetails.image);
+      if (e.target.files[0]) {
+        //event to check for image upload to display preview
+        this.postDetails.image = e.target.files[0];
+        this.postDetails.imageUrl = URL.createObjectURL(this.postDetails.image);
+      }
     },
     modifyPost() {
       this.hidePostMenu();
@@ -190,9 +193,11 @@ export default {
       document
         .getElementById(this.post.id + "file-input")
         .setAttribute("disabled", "true");
-      document
-        .getElementById(this.post.id + " editablePicture")
-        .classList.remove("editimg");
+      if (document.getElementById(this.post.id + " editablePicture")) {
+        document
+          .getElementById(this.post.id + " editablePicture")
+          .classList.remove("editimg");
+      }
       document
         .getElementById(this.post.id + " content")
         .setAttribute("contenteditable", "false");
@@ -200,7 +205,9 @@ export default {
         "none";
       const updateData = new FormData();
       updateData.append("image", this.postDetails.image);
-      updateData.append("imageUrl", this.postDetails.image.name);
+      if (this.postDetails.image) {
+        updateData.append("imageUrl", this.postDetails.image.name);
+      }
       updateData.append(
         "content",
         document.getElementById(this.post.id + " content").textContent
@@ -301,7 +308,11 @@ export default {
   mounted() {
     const posts = document.getElementsByClassName("post");
     posts.forEach(() => {
-      if (storage.getStorage("userId") != this.post.userId) {
+      console.log(storage.getStorage("isOp"));
+      if (
+        storage.getStorage("userId") != this.post.userId &&
+        storage.getStorage("isOp") == "false"
+      ) {
         document.getElementById("edit-btn " + this.post.id).style.visibility =
           "hidden";
       }
@@ -426,7 +437,7 @@ input {
   outline: none;
 }
 .post {
-  width: 70%;
+  width: 80%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -448,6 +459,10 @@ input {
     transition: all 300ms ease-in-out;
     width: 100%;
     margin: 10px 0px;
+  }
+  position: relative;
+  &.info {
+    text-align: center;
   }
 }
 figcaption {
@@ -472,7 +487,7 @@ figcaption {
   }
 }
 .date {
-  color: #dcdcdc;
+  color: #b9b9b9;
   font-size: 12px;
 }
 .saveEdit {
@@ -484,12 +499,13 @@ figcaption {
 .info {
   color: white;
   font-size: 15px;
-  width: 50%;
-  margin: 17.5% 7.5%;
-  display: none;
   position: absolute;
-  text-align: center;
+  margin: -40px -72px;
+  display: none;
+  top: 50%;
+  left: 50%;
   z-index: 1;
+  text-align: center;
 }
 .editimg {
   transition: all 300ms ease-in-out;

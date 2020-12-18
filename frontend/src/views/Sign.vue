@@ -144,7 +144,7 @@ export default {
             }
             storage.setStorage("token", token);
             storage.setStorage("userId", userId.toString());
-            storage.setStorage("username", serverUserData.username);
+            storage.setStorage("isOp", serverUserData.isOp);
             storage.setStorage("imageUrl", serverUserData.imageUrl);
             this.$router.push({ name: "Feed" });
           }
@@ -167,8 +167,9 @@ export default {
 form {
   display: flex;
   flex-direction: column;
-  width: 40%;
-  margin: auto;
+  min-width: 290px;
+  width: 25%;
+  margin: 5% 10%;
 }
 #labelStay {
   align-items: baseline;

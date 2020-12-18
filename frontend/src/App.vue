@@ -56,7 +56,7 @@
   <router-view />
   <footer>
     <NavLink url="/" text="Confidentialité" />
-    <NavLink url="/" text="Conditions générales" />
+    <NavLink url="/" text="CGU / CGV" />
   </footer>
 </template>
 
@@ -96,7 +96,9 @@ export default {
       }
       if (window.innerWidth <= 1080) {
         this.largeScreen = false;
+        document.body.style.margin = "0px";
       } else {
+        document.body.style.margin = "10px";
         this.largeScreen = true;
       }
     },
@@ -216,16 +218,16 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 0px 15%;
+  margin: 0px 10%;
 }
 footer {
-  margin: 20px 15%;
+  margin: 20px 10%;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 h1 {
-  margin-left: 15%;
+  margin-left: 10%;
 }
 nav {
   gap: 10px;

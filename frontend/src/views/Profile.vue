@@ -11,7 +11,7 @@
       @comment-created="getProfilePosts"
       @post-modified="getProfilePosts"
       v-for="post in profilePostsLimit"
-      :key="this.$route.params.id + ' ' + post.id + ' ' + post.comments"
+      :key="this.$route.params.id + ' ' + post.id + ' ' + post.comments + ' ' + index"
       :post="post"
     />
     <router-view />
@@ -34,6 +34,7 @@ export default {
   },
   data() {
     return {
+      index: 0,
       msg: "Vous parcourez actuellement le profil de:",
       profilPosts: [],
       profilPostsIndex: 20,
@@ -52,6 +53,7 @@ export default {
   },
   methods: {
     getProfilePosts() {
+      this.index++;
       axios
         .get("http://localhost:3000/api/posts/" + this.$route.params.id, {
           headers: {

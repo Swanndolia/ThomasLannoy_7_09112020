@@ -229,7 +229,7 @@ button {
   display: none;
 }
 #user-about {
-  width: 70%;
+  width: 80%;
   display: flex;
   justify-content: space-between;
   margin: 10px auto;

@@ -30,7 +30,7 @@ export default {
     return {
       userImageUrl: storage.getStorage("imageUrl"),
       reply: {
-        content: null,
+        content: "",
         image: null,
         imageUrl: "",
       },

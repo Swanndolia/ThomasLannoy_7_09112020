@@ -22,7 +22,7 @@
           <p>.</p>
           <p>.</p>
         </button>
-        <div :id="'edit-menu-reply ' + this.post.id" class="dropdown-content">
+        <div :id="'edit-menu-reply ' + this.reply.id" class="dropdown-content">
           <button @click="modifyReply">Modifier</button>
           <button @click="deleteReply">Supprimer</button>
           <button id="cancel-btn" @click="hideReplyMenu">Annuler</button>
@@ -36,18 +36,32 @@
       </div>
     </figure>
     <div class="reply-content">
-      <p :id="this.reply.id + ' content'" v-if="reply.content != 'null'">
+      <p :id="this.reply.id + ' reply content'">
         {{ reply.content }}
       </p>
-      <img
-        v-if="reply.imageUrl != null"
-        :src="reply.imageUrl"
-        :alt="'Image du replyaire'"
-      />
+      <label
+        ><input
+          @change="onImageChange"
+          class="file-input"
+          :id="this.reply.id + ' reply file-input'"
+          type="file"
+          disabled />
+        <div :id="this.reply.id + ' replyInfo'" class="info">
+          <p>
+            Cliquez pour modifier<br />
+            la photo de votre réponse
+          </p>
+        </div>
+        <img
+          v-if="reply.imageUrl != null"
+          :id="this.reply.id + ' replyEditablePicture'"
+          :src="reply.imageUrl"
+          :alt="'Image de la réponse'"
+      /></label>
       <button
         @click="sendModifiedReply"
         class="saveEdit"
-        :id="this.reply.id + ' confirmEdit'"
+        :id="this.reply.id + ' reply confirmEdit'"
       >
         Enregistrer les modifications
       </button>
@@ -86,12 +100,14 @@ export default {
   },
   methods: {
     showReplyMenu() {
-      document.getElementById("edit-menu-reply " + this.post.id).style.display =
-        "flex";
+      document.getElementById(
+        "edit-menu-reply " + this.reply.id
+      ).style.display = "flex";
     },
     hideReplyMenu() {
-      document.getElementById("edit-menu-reply " + this.post.id).style.display =
-        "none";
+      document.getElementById(
+        "edit-menu-reply " + this.reply.id
+      ).style.display = "none";
     },
     deleteReply() {
       axios
@@ -111,23 +127,55 @@ export default {
     modifyReply() {
       this.hideReplyMenu();
       document
-        .getElementById(this.reply.id + " content")
+        .getElementById(this.reply.id + " reply content")
         .setAttribute("contenteditable", "true");
-      document.getElementById(this.reply.id + " content").focus();
-      document.getElementById(this.reply.id + " confirmEdit").style.display =
-        "inline-block";
+      document.getElementById(this.reply.id + " reply content").focus();
+      document.getElementById(
+        this.reply.id + " reply confirmEdit"
+      ).style.display = "inline-block";
+      if (document.getElementById(this.reply.id + " replyEditablePicture")) {
+        document
+          .getElementById(this.reply.id + " replyEditablePicture")
+          .classList.add("editimg");
+        document.getElementById(this.reply.id + " replyInfo").style.display =
+          "inline-block";
+      } else {
+        document.getElementById(
+          this.reply.id + " reply file-input"
+        ).style.display = "inline-block";
+      }
+      document
+        .getElementById(this.reply.id + " reply file-input")
+        .removeAttribute("disabled");
     },
     sendModifiedReply() {
-      document
-        .getElementById(this.reply.id + " content")
-        .setAttribute("contenteditable", "false");
-      document.getElementById(this.reply.id + " confirmEdit").style.display =
+      document.getElementById(
+        this.reply.id + " reply file-input"
+      ).style.display = "none";
+      document.getElementById(this.reply.id + " replyInfo").style.display =
         "none";
+      document
+        .getElementById(this.reply.id + " reply file-input")
+        .setAttribute("disabled", "true");
+      if (document.getElementById(this.reply.id + " replyEditablePicture")) {
+        document
+          .getElementById(this.reply.id + " replyEditablePicture")
+          .classList.remove("editimg");
+      }
+      document
+        .getElementById(this.reply.id + " reply content")
+        .setAttribute("contenteditable", "false");
+      document.getElementById(
+        this.reply.id + " reply confirmEdit"
+      ).style.display = "none";
       const updateReplyData = new FormData();
       updateReplyData.append(
         "content",
-        document.getElementById(this.reply.id + " content").textContent
+        document.getElementById(this.reply.id + " reply content").textContent
       );
+      if (this.replyDetails.image) {
+        updateReplyData.append("imageUrl", this.replyDetails.image.name);
+      }
       axios
         .put(
           "http://localhost:3000/api/replies/" + this.reply.id,
@@ -218,11 +266,23 @@ export default {
         })
         .catch((error) => console.log(error));
     },
+    onImageChange(e) {
+      if (e.target.files[0]) {
+        //event to check for image upload to display preview
+        this.replyDetails.image = e.target.files[0];
+        this.replyDetails.imageUrl = URL.createObjectURL(
+          this.replyDetails.image
+        );
+      }
+    },
   },
   mounted() {
     const replies = document.getElementsByClassName("post");
     replies.forEach(() => {
-      if (storage.getStorage("userId") != this.reply.userId) {
+      if (
+        storage.getStorage("userId") != this.reply.userId &&
+        storage.getStorage("isOp") == "false"
+      ) {
         document.getElementById(
           "edit-btn-reply " + this.reply.id
         ).style.visibility = "hidden";
@@ -350,7 +410,7 @@ input {
   flex-direction: column;
   justify-content: center;
   margin: 30px auto;
-  background: darken(#2c2f33, 5);
+  background: lighten(#2c2f33, 10);
   border-radius: 50px;
 }
 .reply-user-info {
@@ -364,6 +424,10 @@ input {
   & img {
     width: 100%;
     margin: 10px 0px;
+  }
+  position: relative;
+  &.replyInfo {
+    text-align: center;
   }
 }
 figcaption {
@@ -395,5 +459,23 @@ figcaption {
   display: none;
   color: black;
   position: relative;
+}
+.info {
+  color: white;
+  font-size: 15px;
+  position: absolute;
+  margin: -30px -90px;
+  display: none;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  text-align: center;
+}
+.editimg {
+  transition: all 300ms ease-in-out;
+  filter: blur(3px) brightness(0.5);
+}
+.file-input {
+  display: none;
 }
 </style>

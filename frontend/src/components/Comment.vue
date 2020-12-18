@@ -22,7 +22,10 @@
           <p>.</p>
           <p>.</p>
         </button>
-        <div :id="'edit-menu-comment ' + this.post.id" class="dropdown-content">
+        <div
+          :id="'edit-menu-comment ' + this.comment.id"
+          class="dropdown-content"
+        >
           <button @click="modifyComment">Modifier</button>
           <button @click="deleteComment">Supprimer</button>
           <button id="cancel-btn" @click="hideCommentMenu">Annuler</button>
@@ -36,18 +39,32 @@
       </div>
     </figure>
     <div class="comment-content">
-      <p :id="this.comment.id + ' content'" v-if="comment.content != 'null'">
+      <p :id="this.comment.id + ' comment content'">
         {{ comment.content }}
       </p>
-      <img
-        v-if="comment.imageUrl != null"
-        :src="comment.imageUrl"
-        :alt="'Image du commentaire'"
-      />
+      <label
+        ><input
+          @change="onImageChange"
+          class="file-input"
+          :id="this.comment.id + ' comment file-input'"
+          type="file"
+          disabled />
+        <div :id="this.comment.id + ' commentInfo'" class="info">
+          <p>
+            Cliquez pour modifier<br />
+            la photo de votre comment
+          </p>
+        </div>
+        <img
+          v-if="comment.imageUrl != null"
+          :id="this.comment.id + ' commentEditablePicture'"
+          :src="comment.imageUrl"
+          :alt="'Image du commentaire'"
+      /></label>
       <button
         @click="sendModifiedComment"
         class="saveEdit"
-        :id="this.comment.id + ' confirmEdit'"
+        :id="this.comment.id + ' comment confirmEdit'"
       >
         Enregistrer les modifications
       </button>
@@ -127,12 +144,12 @@ export default {
     },
     showCommentMenu() {
       document.getElementById(
-        "edit-menu-comment " + this.post.id
+        "edit-menu-comment " + this.comment.id
       ).style.display = "flex";
     },
     hideCommentMenu() {
       document.getElementById(
-        "edit-menu-comment " + this.post.id
+        "edit-menu-comment " + this.comment.id
       ).style.display = "none";
     },
     deleteComment() {
@@ -153,23 +170,61 @@ export default {
     modifyComment() {
       this.hideCommentMenu();
       document
-        .getElementById(this.comment.id + " content")
+        .getElementById(this.comment.id + " comment content")
         .setAttribute("contenteditable", "true");
-      document.getElementById(this.comment.id + " content").focus();
-      document.getElementById(this.comment.id + " confirmEdit").style.display =
-        "inline-block";
+      document.getElementById(this.comment.id + " comment content").focus();
+      document.getElementById(
+        this.comment.id + " comment confirmEdit"
+      ).style.display = "inline-block";
+      if (
+        document.getElementById(this.comment.id + " commentEditablePicture")
+      ) {
+        document
+          .getElementById(this.comment.id + " commentEditablePicture")
+          .classList.add("editimg");
+        document.getElementById(
+          this.comment.id + " commentInfo"
+        ).style.display = "inline-block";
+      } else {
+        document.getElementById(
+          this.comment.id + " comment file-input"
+        ).style.display = "inline-block";
+      }
+      document
+        .getElementById(this.comment.id + " comment file-input")
+        .removeAttribute("disabled");
     },
     sendModifiedComment() {
-      document
-        .getElementById(this.comment.id + " content")
-        .setAttribute("contenteditable", "false");
-      document.getElementById(this.comment.id + " confirmEdit").style.display =
+      document.getElementById(
+        this.comment.id + " comment file-input"
+      ).style.display = "none";
+      document.getElementById(this.comment.id + " commentInfo").style.display =
         "none";
+      document
+        .getElementById(this.comment.id + " comment file-input")
+        .setAttribute("disabled", "true");
+      if (
+        document.getElementById(this.comment.id + " commentEditablePicture")
+      ) {
+        document
+          .getElementById(this.comment.id + " commentEditablePicture")
+          .classList.remove("editimg");
+      }
+      document
+        .getElementById(this.comment.id + " comment content")
+        .setAttribute("contenteditable", "false");
+      document.getElementById(
+        this.comment.id + " comment confirmEdit"
+      ).style.display = "none";
       const updateCommentData = new FormData();
       updateCommentData.append(
         "content",
-        document.getElementById(this.comment.id + " content").textContent
+        document.getElementById(this.comment.id + " comment content")
+          .textContent
       );
+      if (this.commentDetails.image) {
+        updateCommentData.append("imageUrl", this.commentDetails.image.name);
+      }
       axios
         .put(
           "http://localhost:3000/api/comments/" + this.comment.id,
@@ -260,11 +315,23 @@ export default {
         })
         .catch((error) => console.log(error));
     },
+    onImageChange(e) {
+      if (e.target.files[0]) {
+        //event to check for image upload to display preview
+        this.commentDetails.image = e.target.files[0];
+        this.commentDetails.imageUrl = URL.createObjectURL(
+          this.commentDetails.image
+        );
+      }
+    },
   },
   mounted() {
     const comments = document.getElementsByClassName("post");
     comments.forEach(() => {
-      if (storage.getStorage("userId") != this.comment.userId) {
+      if (
+        storage.getStorage("userId") != this.comment.userId &&
+        storage.getStorage("isOp") == "false"
+      ) {
         document.getElementById(
           "edit-btn-comment " + this.comment.id
         ).style.visibility = "hidden";
@@ -403,6 +470,10 @@ input {
     width: 100%;
     margin: 10px 0px;
   }
+  position: relative;
+  &.info {
+    text-align: center;
+  }
 }
 figcaption {
   min-width: fit-content;
@@ -432,5 +503,23 @@ figcaption {
   display: none;
   color: black;
   position: relative;
+}
+.info {
+  color: white;
+  font-size: 15px;
+  position: absolute;
+  margin: -30px -90px;
+  display: none;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  text-align: center;
+}
+.editimg {
+  transition: all 300ms ease-in-out;
+  filter: blur(3px) brightness(0.5);
+}
+.file-input {
+  display: none;
 }
 </style>

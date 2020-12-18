@@ -100,7 +100,7 @@ export default {
   }
   border: solid 1px;
   border-radius: 40px;
-  width: 70%;
+  width: 80%;
   margin: auto;
 }
 #preview {
@@ -131,11 +131,14 @@ textarea {
   padding: 0px 0px 80px;
   min-height: 100%;
   width: 80%;
-  margin: -10px 10%;
+  margin: -40px 70px;
   border: none;
   resize: none;
   &:hover {
     cursor: pointer;
+  }
+  &::placeholder {
+    color: #b9b9b9;
   }
 }
 button {

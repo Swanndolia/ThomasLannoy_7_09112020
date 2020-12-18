@@ -7,4 +7,4 @@ go to the folder "<different\_folder\_name>/frontend" and run "npm install" then
 
 keep these terminal running to test the project
 
-Then go to [http://localhost:4200/](http://localhost:4200/)
+Then go to [http://localhost:8080/](http://localhost:4200/)

@@ -7,7 +7,7 @@
       @comment-created="getAllPosts"
       @post-modified="getAllPosts"
       v-for="post in feedPostsLimit"
-      :key="post.id + ' ' + post.comments"
+      :key="post.id + ' ' + post.comments + ' ' + index"
       :post="post"
     />
   </main>
@@ -28,6 +28,7 @@ export default {
   },
   data() {
     return {
+      index: 0,
       feedPosts: [],
       feedPostsIndex: 20,
       msg: "Bienvenue sur le fil d'actualité général de Groupomania",
@@ -45,6 +46,7 @@ export default {
   },
   methods: {
     getAllPosts() {
+      this.index++;
       axios
         .get("http://localhost:3000/api/posts", {
           headers: {

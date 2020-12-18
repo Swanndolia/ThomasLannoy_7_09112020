@@ -32,7 +32,7 @@ export default {
     return {
       userImageUrl: storage.getStorage("imageUrl"),
       comment: {
-        content: null,
+        content: "",
         image: null,
         imageUrl: "",
       },
@@ -101,7 +101,7 @@ export default {
 #new-comment {
   display: flex;
   flex-direction: column;
-  background: lighten(#2c2f33, 5);
+  background: darken(#2c2f33, 5);
   &:hover {
     cursor: pointer;
   }

@@ -18,6 +18,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       defaultValue: "Ceci est une courte description par default, modifiez moi !",
     },
+    isOp:{
+      type: Sequelize.BOOLEAN,
+      defaultValue: false,
+    }
   });
   return Users;
 };
