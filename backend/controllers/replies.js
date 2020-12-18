@@ -62,8 +62,17 @@ exports.modifyReply = (req, res, next) => {
       if (req.body.imageUrl) {
         reply.imageUrl = `${req.protocol}://${req.get("host")}/images/${req.body.imageUrl}`;
       }
-      reply.save();
-      res.status(200).json(reply.id + " has been modified");
+      if (
+        jwt.verify(token, "txRcW5wXc0jlGKupdavvxTQ4Fd8P7Jzcqa4GmM6CJC5VYOySzdaoFc5Pg2mCb04dY9X6s16d65NiBxtGqagr6bd2UCa4721QgfIWMuBwMIWhzeY8Z3Y4s2DoSGXeNV2c")
+          .isOp ||
+        jwt.verify(token, "txRcW5wXc0jlGKupdavvxTQ4Fd8P7Jzcqa4GmM6CJC5VYOySzdaoFc5Pg2mCb04dY9X6s16d65NiBxtGqagr6bd2UCa4721QgfIWMuBwMIWhzeY8Z3Y4s2DoSGXeNV2c")
+          .userId == comment.userId
+      ) {
+        reply.save();
+        res.status(200).json(reply.id + " has been modified");
+      } else {
+        res.status(401).json("Tentative de piratage détectée");
+      }
     })
     .catch((error) => {
       res.status(404).json({
@@ -80,8 +89,17 @@ exports.deleteReply = (req, res, next) => {
       },
     })
     .then((reply) => {
-      reply.destroy();
-      res.status(200).json(reply.id + " has been deleted");
+      if (
+        jwt.verify(token, "txRcW5wXc0jlGKupdavvxTQ4Fd8P7Jzcqa4GmM6CJC5VYOySzdaoFc5Pg2mCb04dY9X6s16d65NiBxtGqagr6bd2UCa4721QgfIWMuBwMIWhzeY8Z3Y4s2DoSGXeNV2c")
+          .isOp ||
+        jwt.verify(token, "txRcW5wXc0jlGKupdavvxTQ4Fd8P7Jzcqa4GmM6CJC5VYOySzdaoFc5Pg2mCb04dY9X6s16d65NiBxtGqagr6bd2UCa4721QgfIWMuBwMIWhzeY8Z3Y4s2DoSGXeNV2c")
+          .userId == comment.userId
+      ) {
+        reply.destroy();
+        res.status(200).json(reply.id + " has been deleted");
+      } else {
+        res.status(401).json("Tentative de piratage détectée");
+      }
     })
     .catch((error) => {
       res.status(404).json({

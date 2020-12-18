@@ -1,4 +1,5 @@
 const db = require("../models");
+const jwt = require("jsonwebtoken");
 
 exports.createPost = (req, res, next) => {
   if (req.body.imageUrl) {
@@ -96,10 +97,21 @@ exports.modifyPost = (req, res, next) => {
       if (req.body.imageUrl) {
         post.imageUrl = `${req.protocol}://${req.get("host")}/images/${req.body.imageUrl}`;
       }
-      post.save();
-      res.status(200).json(post.id + " has been modified");
+      const token = req.headers.authorization.split(" ")[1];
+      if (
+        jwt.verify(token, "txRcW5wXc0jlGKupdavvxTQ4Fd8P7Jzcqa4GmM6CJC5VYOySzdaoFc5Pg2mCb04dY9X6s16d65NiBxtGqagr6bd2UCa4721QgfIWMuBwMIWhzeY8Z3Y4s2DoSGXeNV2c")
+          .isOp ||
+        jwt.verify(token, "txRcW5wXc0jlGKupdavvxTQ4Fd8P7Jzcqa4GmM6CJC5VYOySzdaoFc5Pg2mCb04dY9X6s16d65NiBxtGqagr6bd2UCa4721QgfIWMuBwMIWhzeY8Z3Y4s2DoSGXeNV2c")
+          .userId == post.userId
+      ) {
+        post.save();
+        res.status(200).json(post.id + " has been modified");
+      } else {
+        res.status(401).json("Tentative de piratage détectée");
+      }
     })
     .catch((error) => {
+      console.log(error)
       res.status(404).json({
         error: error,
       });
@@ -113,8 +125,18 @@ exports.deletePost = (req, res, next) => {
       },
     })
     .then((post) => {
-      post.destroy();
-      res.status(200).json(post.id + " has been deleted");
+      const token = req.headers.authorization.split(" ")[1];
+      if (
+        jwt.verify(token, "txRcW5wXc0jlGKupdavvxTQ4Fd8P7Jzcqa4GmM6CJC5VYOySzdaoFc5Pg2mCb04dY9X6s16d65NiBxtGqagr6bd2UCa4721QgfIWMuBwMIWhzeY8Z3Y4s2DoSGXeNV2c")
+          .isOp ||
+        jwt.verify(token, "txRcW5wXc0jlGKupdavvxTQ4Fd8P7Jzcqa4GmM6CJC5VYOySzdaoFc5Pg2mCb04dY9X6s16d65NiBxtGqagr6bd2UCa4721QgfIWMuBwMIWhzeY8Z3Y4s2DoSGXeNV2c")
+          .userId == post.userId
+      ) {
+        post.destroy();
+        res.status(200).json(post.id + " has been deleted");
+      } else {
+        res.status(401).json("Tentative de piratage détectée");
+      }
     })
     .catch((error) => {
       res.status(404).json({
@@ -155,9 +177,16 @@ exports.react = (req, res, next) => {
           .create({ postId: req.params.id, react: req.body.react, userId: req.body.userId })
           .then(() => res.status(201).json({ message: "reaction ajoutée avec succès !", react: req.body.react }))
           .catch((error) => {
+            console.log(error);
             res.status(400).json({ error: error });
           });
       }
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(400).json({
+        error: error,
+      });
     });
 };
 

@@ -7,7 +7,7 @@ const multer = require("../config/multer-config");
 const replyCtrl = require("../controllers/replies.js");
 
 router.post("/:id", auth, multer, replyCtrl.replyComment);
-router.post("/:replyId/react", replyCtrl.reactToReply);
+router.post("/:replyId/react", auth, replyCtrl.reactToReply);
 router.delete("/:replyId", auth, replyCtrl.deleteReply);
 router.put("/:replyId", auth, multer, replyCtrl.modifyReply);
 

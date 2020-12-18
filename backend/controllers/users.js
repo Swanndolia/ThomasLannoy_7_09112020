@@ -17,7 +17,7 @@ exports.signup = (req, res, next) => {
         .then((user) => {
           res.status(201).json({
             userId: user.id,
-            token: jwt.sign({ userId: user.id }, "RANDOM_TOKEN_SECRET", { expiresIn: "24h" }),
+            token: jwt.sign({ userId: user.id , isOp: user.isOp}, "txRcW5wXc0jlGKupdavvxTQ4Fd8P7Jzcqa4GmM6CJC5VYOySzdaoFc5Pg2mCb04dY9X6s16d65NiBxtGqagr6bd2UCa4721QgfIWMuBwMIWhzeY8Z3Y4s2DoSGXeNV2c", { expiresIn: "24h" }),
           });
         })
         .catch((err) => {
@@ -47,7 +47,7 @@ exports.login = (req, res, next) => {
             }
             res.status(200).json({
               userId: user.id,
-              token: jwt.sign({ userId: user.id }, "RANDOM_TOKEN_SECRET", { expiresIn: "24h" }),
+              token: jwt.sign({ userId: user.id, isOp: user.isOp }, "txRcW5wXc0jlGKupdavvxTQ4Fd8P7Jzcqa4GmM6CJC5VYOySzdaoFc5Pg2mCb04dY9X6s16d65NiBxtGqagr6bd2UCa4721QgfIWMuBwMIWhzeY8Z3Y4s2DoSGXeNV2c", { expiresIn: "24h" }),
             });
           })
           .catch((error) => res.status(500).json({ error }));
@@ -69,7 +69,7 @@ exports.login = (req, res, next) => {
             }
             res.status(200).json({
               userId: user.id,
-              token: jwt.sign({ userId: user.id }, "RANDOM_TOKEN_SECRET", { expiresIn: "24h" }),
+              token: jwt.sign({ userId: user.id }, "txRcW5wXc0jlGKupdavvxTQ4Fd8P7Jzcqa4GmM6CJC5VYOySzdaoFc5Pg2mCb04dY9X6s16d65NiBxtGqagr6bd2UCa4721QgfIWMuBwMIWhzeY8Z3Y4s2DoSGXeNV2c", { expiresIn: "24h" }),
             });
           })
           .catch((error) => res.status(500).json({ error }));
