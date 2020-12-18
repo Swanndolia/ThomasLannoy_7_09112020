@@ -27,6 +27,7 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes,
 });
+//redirect to sign if user is not
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!storage.getStorage("token")) {

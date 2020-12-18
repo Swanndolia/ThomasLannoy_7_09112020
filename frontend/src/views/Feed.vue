@@ -35,16 +35,19 @@ export default {
     };
   },
   computed: {
+    //incremented by 20 when user reach bottom of the page
     feedPostsLimit() {
       return this.feedPosts.slice(0, this.feedPostsIndex);
     },
   },
   watch: {
+    //watch route params change to reload componements if user go from a profile to another one 
     "$route.params.id": function () {
       this.getAllPosts();
     },
   },
   methods: {
+    //get all post ands increment index to ensure postList reload on new post/comment/reply 
     getAllPosts() {
       this.index++;
       axios
@@ -54,6 +57,7 @@ export default {
           },
         })
         .then((response) => {
+          //change date to human readable
           for (let i = 0; i < response.data.length; i++) {
             response.data[i].createdAt = response.data[i].createdAt.replace(
               "T",
@@ -94,6 +98,7 @@ export default {
           console.log(error);
         });
     },
+    //method to chekc if user is at the bottom of the page
     checkPosition() {
       if (window.innerHeight + window.scrollY >= document.body.scrollHeight) {
         this.feedPostsIndex += 20;

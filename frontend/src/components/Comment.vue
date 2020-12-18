@@ -126,6 +126,7 @@ export default {
     },
   },
   methods: {
+    // show/hide replies 
     reply() {
       if (this.commentDetails.replyVisibile == true) {
         this.repliesList = [];
@@ -139,6 +140,7 @@ export default {
         this.commentDetails.replyVisibile = true;
       }
     },
+    //custom event to refresh on reply post
     refreshReplies(id) {
       this.$emit("new-reply-created", id);
     },
@@ -155,7 +157,6 @@ export default {
     deleteComment() {
       axios
         .delete("http://localhost:3000/api/comments/" + this.comment.id, {
-          // Verif token user in SessionStorage before posting
           headers: {
             Authorization: "Bearer " + storage.getStorage("token"),
           },
@@ -167,6 +168,7 @@ export default {
         })
         .catch((error) => console.log(error));
     },
+    //swap comment to something editable
     modifyComment() {
       this.hideCommentMenu();
       document
@@ -194,6 +196,7 @@ export default {
         .getElementById(this.comment.id + " comment file-input")
         .removeAttribute("disabled");
     },
+    //send edited infos to update comment
     sendModifiedComment() {
       document.getElementById(
         this.comment.id + " comment file-input"
@@ -230,7 +233,6 @@ export default {
           "http://localhost:3000/api/comments/" + this.comment.id,
           updateCommentData,
           {
-            // Verif token user in SessionStorage before posting
             headers: {
               Authorization: "Bearer " + storage.getStorage("token"),
             },
@@ -273,7 +275,7 @@ export default {
               Authorization: "Bearer " + storage.getStorage("token"),
             },
           }
-        )
+        )// check response message to add correct class to element 
         .then((response) => {
           if (response) {
             if (response.data.react == -1) {
@@ -315,6 +317,7 @@ export default {
         })
         .catch((error) => console.log(error));
     },
+    //handler for edit img
     onImageChange(e) {
       if (e.target.files[0].type.includes("image")) {
         this.commentDetails.image = e.target.files[0];
@@ -325,6 +328,7 @@ export default {
     },
   },
   mounted() {
+    //hide ... for editing if user not op or author
     const comments = document.getElementsByClassName("post");
     comments.forEach(() => {
       if (
@@ -336,6 +340,7 @@ export default {
         ).style.visibility = "hidden";
       }
     });
+    // event listener to determine mouse location relatively to react field and dynamically edit background
     const elements = document.getElementsByClassName("chooseReactComment");
     elements.forEach((el) =>
       el.addEventListener("mousemove", (e) => {

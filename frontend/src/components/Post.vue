@@ -114,6 +114,7 @@ export default {
     };
   },
   methods: {
+    //custom event send to feed or profile to update on something new (post comment / reply)
     refreshComments(id) {
       this.$emit("comment-created", id);
     },
@@ -144,7 +145,6 @@ export default {
     deletePost() {
       axios
         .delete("http://localhost:3000/api/posts/" + this.post.id, {
-          // Verif token user in SessionStorage before posting
           headers: {
             Authorization: "Bearer " + storage.getStorage("token"),
           },
@@ -162,6 +162,7 @@ export default {
         this.postDetails.imageUrl = URL.createObjectURL(this.postDetails.image);
       }
     },
+    //transform post to something editable
     modifyPost() {
       this.hidePostMenu();
       document
@@ -184,6 +185,7 @@ export default {
         .getElementById(this.post.id + "file-input")
         .removeAttribute("disabled");
     },
+    //send edited infos to backend to update
     sendModifiedPost() {
       document.getElementById(this.post.id + "file-input").style.display =
         "none";
@@ -212,7 +214,6 @@ export default {
       );
       axios
         .put("http://localhost:3000/api/posts/" + this.post.id, updateData, {
-          // Verif token user in SessionStorage before posting
           headers: {
             Authorization: "Bearer " + storage.getStorage("token"),
           },
@@ -249,14 +250,13 @@ export default {
           "http://localhost:3000/api/posts/" + this.post.id + "/react",
           reactData,
           {
-            // Verif token user in SessionStorage before posting
             headers: {
               Authorization: "Bearer " + storage.getStorage("token"),
             },
           }
         )
         .then((response) => {
-          if (response) {
+          if (response) {// check response message to add correct class to element 
             if (response.data.react == -1) {
               if (document.getElementById(id).classList.contains("reactLike")) {
                 this.postDetails.likes--;
@@ -304,6 +304,7 @@ export default {
     },
   },
   mounted() {
+    // hide ... to edit or delete post if user not author or op
     const posts = document.getElementsByClassName("post");
     posts.forEach(() => {
       if (
@@ -314,6 +315,7 @@ export default {
           "hidden";
       }
     });
+    // add dynamic background to each react fields (1 per post) + mouse location tracker inside this field 
     const elements = document.getElementsByClassName("chooseReact");
     elements.forEach((el) =>
       el.addEventListener("mousemove", (e) => {

@@ -112,7 +112,6 @@ export default {
     deleteReply() {
       axios
         .delete("http://localhost:3000/api/replies/" + this.reply.id, {
-          // Verif token user in SessionStorage before posting
           headers: {
             Authorization: "Bearer " + storage.getStorage("token"),
           },
@@ -124,6 +123,7 @@ export default {
         })
         .catch((error) => console.log(error));
     },
+    //transform reply to something editable
     modifyReply() {
       this.hideReplyMenu();
       document
@@ -148,6 +148,7 @@ export default {
         .getElementById(this.reply.id + " reply file-input")
         .removeAttribute("disabled");
     },
+    //send edited infos to backend
     sendModifiedReply() {
       document.getElementById(
         this.reply.id + " reply file-input"
@@ -181,7 +182,6 @@ export default {
           "http://localhost:3000/api/replies/" + this.reply.id,
           updateReplyData,
           {
-            // Verif token user in SessionStorage before posting
             headers: {
               Authorization: "Bearer " + storage.getStorage("token"),
             },
@@ -219,12 +219,11 @@ export default {
           "http://localhost:3000/api/replies/" + this.reply.id + "/react",
           reactData,
           {
-            // Verif token user in SessionStorage before posting
             headers: {
               Authorization: "Bearer " + storage.getStorage("token"),
             },
           }
-        )
+        )// check response message to add correct class to element (to display color green / red / remove classlist)
         .then((response) => {
           if (response) {
             if (response.data.react == -1) {
@@ -276,6 +275,7 @@ export default {
     },
   },
   mounted() {
+    //remove ... to edit reply if not author or op
     const replies = document.getElementsByClassName("post");
     replies.forEach(() => {
       if (
@@ -287,6 +287,7 @@ export default {
         ).style.visibility = "hidden";
       }
     });
+    //add to each elements a mouse location tracker inside react field to manage dynamic background 
     const elements = document.getElementsByClassName("chooseReactReply");
     elements.forEach((el) =>
       el.addEventListener("mousemove", (e) => {

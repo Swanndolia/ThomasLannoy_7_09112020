@@ -52,7 +52,6 @@ export default {
           ReplyData.append("imageUrl", this.reply.image.name);
         }
         ReplyData.append("content", this.reply.content);
-        //we put image and content of reply in a FormData and check if it's not empty
         if (this.running == true) {
           return;
         }
@@ -62,7 +61,6 @@ export default {
             "http://localhost:3000/api/replies/" + this.commentId,
             ReplyData,
             {
-              // Verif token user in SessionStorage before Replying
               headers: {
                 Authorization: "Bearer " + storage.getStorage("token"),
               },

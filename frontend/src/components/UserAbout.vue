@@ -73,7 +73,6 @@ export default {
           .delete(
             "http://localhost:3000/api/users/" + storage.getStorage("userId"),
             {
-              // Verif token user in SessionStorage before posting
               headers: {
                 Authorization: "Bearer " + storage.getStorage("token"),
               },
@@ -89,6 +88,7 @@ export default {
           .catch((error) => console.log(error));
       }
     },
+    //remove disable attribute from each inputs to make them editable without loading
     editMyProfile() {
       this.elements.forEach((el) => el.removeAttribute("disabled"));
       document.getElementById("edit-btn").style.display = "none";
@@ -97,6 +97,7 @@ export default {
       document.getElementById("info").style.display = "inline-block";
       document.getElementById("delete-btn").style.display = "inline-block";
     },
+    // add again disbale attribute to each input and send updated info to backend
     saveMyProfile() {
       this.elements.forEach((el) => el.setAttribute("disabled", true));
       document.getElementById("edit-btn").style.display = "inline-block";
@@ -132,9 +133,11 @@ export default {
         .catch((error) => console.log(error));
     },
     onImageChange(e) {
-      //event to check for image upload to display preview
-      this.userAbout.image = e.target.files[0];
-      this.userAbout.imageUrl = URL.createObjectURL(this.userAbout.image);
+      if (e.target.files[0].type.includes("image")) {
+        //event to check for image upload to display preview
+        this.userAbout.image = e.target.files[0];
+        this.userAbout.imageUrl = URL.createObjectURL(this.userAbout.image);
+      }
     },
   },
   mounted() {

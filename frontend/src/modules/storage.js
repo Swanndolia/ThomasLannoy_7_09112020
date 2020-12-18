@@ -13,10 +13,3 @@ export function getStorage(key) {
     return sessionStorage.getItem(key);
   }
 }
-export function getAllStorage() {
-  if (localStorage.getItem("staySigned")) {
-    return localStorage;
-  } else {
-    return sessionStorage;
-  }
-}

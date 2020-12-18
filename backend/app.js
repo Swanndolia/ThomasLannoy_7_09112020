@@ -19,6 +19,7 @@ app.use((req, res, next) => {
   next();
 });
 
+//for security
 app.use(helmet());
 
 app.set("trust proxy", 1);

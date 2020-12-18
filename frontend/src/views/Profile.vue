@@ -11,7 +11,15 @@
       @comment-created="getProfilePosts"
       @post-modified="getProfilePosts"
       v-for="post in profilePostsLimit"
-      :key="this.$route.params.id + ' ' + post.id + ' ' + post.comments + ' ' + index"
+      :key="
+        this.$route.params.id +
+        ' ' +
+        post.id +
+        ' ' +
+        post.comments +
+        ' ' +
+        index
+      "
       :post="post"
     />
     <router-view />
@@ -42,16 +50,19 @@ export default {
     };
   },
   computed: {
+    //increment by 20 to display more post if user is at the bottom of the page (prevent freeze on huge posts amounts)
     profilePostsLimit() {
       return this.profilPosts.slice(0, this.profilPostsIndex);
     },
   },
   watch: {
+    //watch route params change to reload componements if user go from a profile to another one
     "$route.params.id": function () {
       this.getProfilePosts();
     },
   },
   methods: {
+    //get all post of a profile and increment index to ensure userpostList reload on new post/comment/reply
     getProfilePosts() {
       this.index++;
       axios
@@ -61,6 +72,7 @@ export default {
           },
         })
         .then((response) => {
+          //change date to human readable
           for (let i = 0; i < response.data.length; i++) {
             response.data[i].createdAt = response.data[i].createdAt.replace(
               "T",

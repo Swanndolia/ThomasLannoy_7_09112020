@@ -46,6 +46,7 @@ export default {
     };
   },
   methods: {
+    //transmute login form to register
     swapLoginRegister() {
       if (
         document.getElementById("registerOrLog").innerHTML ==
@@ -70,6 +71,7 @@ export default {
         this.msg = "This is the page to register";
       }
     },
+    //on press on sign handle both login and register
     sign() {
       const userData = {
         username: this.creditentials.username,

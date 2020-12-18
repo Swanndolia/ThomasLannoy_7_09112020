@@ -87,7 +87,7 @@ export default {
     window.addEventListener("resize", this.checkwidth);
   },
   methods: {
-    // Maybe better in css should check
+    //check screen width
     checkwidth() {
       if (window.innerWidth < 1265) {
         document.getElementById("searchInput").style.width = "130px";
@@ -120,6 +120,7 @@ export default {
       return str.split("").map(translate).join("");
     },
     getAllUsers() {
+      //get all user for search
       axios
         .get("http://localhost:3000/api/users/", {
           headers: {
@@ -140,12 +141,14 @@ export default {
         });
       this.handleSearch(document.getElementById("searchInput").value);
     },
+    //search handler
     handleSearch(value) {
       this.matchingUsers = { user: [] };
       if (value) {
         this.searchFilter(value.toLowerCase());
       }
     },
+    //filter to match with input value
     searchFilter(value) {
       for (let i = 0; i < Object.keys(this.allUsers).length; i++) {
         const detailedName = this.allUsers[i].username.toLowerCase().split(" ");

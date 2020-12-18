@@ -51,14 +51,12 @@ export default {
         this.post.content = "";
         this.post.image = null;
         this.post.imageUrl = "";
-        //we put image and content of post in a FormData and check if it's not empty
         if (this.running == true) {
           return;
         }
         this.running = true;
         axios
           .post("http://localhost:3000/api/posts", postData, {
-            // Verif token user in SessionStorage before posting
             headers: {
               Authorization: "Bearer " + storage.getStorage("token"),
             },

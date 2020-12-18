@@ -23,7 +23,7 @@
 
 <script>
 import * as storage from "../modules/storage.js";
-import axios from "axios"; //axio is used to make request on API
+import axios from "axios"; 
 
 export default {
   inheritAttrs: false,
@@ -54,7 +54,6 @@ export default {
           CommentData.append("imageUrl", this.comment.image.name);
         }
         CommentData.append("content", this.comment.content);
-        //we put image and content of comment in a FormData and check if it's not empty
         if (this.running == true) {
           return;
         }
@@ -64,7 +63,6 @@ export default {
             "http://localhost:3000/api/comments/" + this.postId,
             CommentData,
             {
-              // Verif token user in SessionStorage before Commenting
               headers: {
                 Authorization: "Bearer " + storage.getStorage("token"),
               },
