@@ -78,12 +78,9 @@ export default {
       }
     },
     onImageChange(e) {
-      //event to check for image upload to display preview
       if (e.target.files[0].type.includes("image")) {
         this.reply.image = e.target.files[0];
         this.reply.imageUrl = URL.createObjectURL(this.reply.image);
-      } else {
-        //tell the user he can't upload this kind of file
       }
     },
   },

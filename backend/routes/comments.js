@@ -7,11 +7,8 @@ const multer = require("../config/multer-config");
 const commentsCtrl = require("../controllers/comments.js");
 
 router.post("/:id", auth, multer, commentsCtrl.commentPost);
-
 router.post("/:commentId/react", commentsCtrl.reactToComment);
-
 router.delete("/:commentId", auth, commentsCtrl.deleteComment);
-
 router.put("/:commentId", auth, multer, commentsCtrl.modifyComment);
 
 module.exports = router;

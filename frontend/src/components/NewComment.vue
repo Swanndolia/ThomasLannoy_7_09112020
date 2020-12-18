@@ -80,12 +80,9 @@ export default {
       }
     },
     onImageChange(e) {
-      //event to check for image upload to display preview
       if (e.target.files[0].type.includes("image")) {
         this.comment.image = e.target.files[0];
         this.comment.imageUrl = URL.createObjectURL(this.comment.image);
-      } else {
-        //tell the user he can't upload this kind of file
       }
     },
   },

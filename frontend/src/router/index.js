@@ -35,7 +35,7 @@ router.beforeEach((to, from, next) => {
       next();
     }
   } else {
-    next(); // does not require auth, make sure to always call next()!
+    next();
   }
 });
 export default router;

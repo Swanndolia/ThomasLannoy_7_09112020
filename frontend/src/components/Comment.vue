@@ -316,8 +316,7 @@ export default {
         .catch((error) => console.log(error));
     },
     onImageChange(e) {
-      if (e.target.files[0]) {
-        //event to check for image upload to display preview
+      if (e.target.files[0].type.includes("image")) {
         this.commentDetails.image = e.target.files[0];
         this.commentDetails.imageUrl = URL.createObjectURL(
           this.commentDetails.image

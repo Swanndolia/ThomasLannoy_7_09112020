@@ -157,8 +157,7 @@ export default {
         .catch((error) => console.log(error));
     },
     onImageChange(e) {
-      if (e.target.files[0]) {
-        //event to check for image upload to display preview
+      if (e.target.files[0].type.includes("image")) {
         this.postDetails.image = e.target.files[0];
         this.postDetails.imageUrl = URL.createObjectURL(this.postDetails.image);
       }
