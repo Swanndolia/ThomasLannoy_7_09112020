@@ -118,7 +118,6 @@ export default {
       this.$emit("comment-created", id);
     },
     refreshReplies(id) {
-      console.log(id);
       this.$emit("reply-created", id);
     },
     showPostMenu() {
@@ -308,7 +307,6 @@ export default {
   mounted() {
     const posts = document.getElementsByClassName("post");
     posts.forEach(() => {
-      console.log(storage.getStorage("isOp"));
       if (
         storage.getStorage("userId") != this.post.userId &&
         storage.getStorage("isOp") == "false"
