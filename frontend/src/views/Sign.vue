@@ -130,6 +130,7 @@ export default {
         this.running = false;
       }
     },
+    //set infos in storage (local or session depending if stayLogin)
     storeInfo(token, userId) {
       let serverUserData = {};
       axios

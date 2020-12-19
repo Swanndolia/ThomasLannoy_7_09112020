@@ -12,7 +12,7 @@ module.exports = (sequelize, Sequelize) => {
     },
     imageUrl: {
       type: Sequelize.STRING,
-      defaultValue: "https://picsum.photos/200/300",
+      defaultValue: "https://www.centraltrials.com/wp-content/uploads/2016/11/User-Default.jpg",
     },
     about: {
       type: Sequelize.STRING,
